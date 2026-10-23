@@ -1,0 +1,81 @@
+'use strict';
+// Phase 4 live smoke: exercises the real auth API on http://localhost:4000.
+const BASE = 'http://localhost:4000';
+const results = [];
+let cookie = '';
+
+async function step(name, method, path, { body, token, withCookie, keepCookie } = {}) {
+  const headers = { 'Content-Type': 'application/json' };
+  if (token) headers.Authorization = `Bearer ${token}`;
+  if (withCookie && cookie) headers.Cookie = cookie;
+  const res = await fetch(`${BASE}${path}`, {
+    method,
+    headers,
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  const setCookies = res.headers.getSetCookie ? res.headers.getSetCookie() : [];
+  if (setCookies.length && !keepCookie) cookie = setCookies.map((c) => c.split(';')[0]).join('; ');
+  const json = await res.json().catch(() => null);
+  results.push({ step: name, status: res.status, body: json, setCookies });
+  return json || {};
+}
+
+(async () => {
+  const email = `smoke-${Date.now()}@b2boms.test`;
+
+  await step('health', 'GET', '/api/health');
+  const reg = await step('register customer (201)', 'POST', '/api/auth/register', {
+    body: { email, password: 'Str0ngPassw0rd', name: 'Smoke Tester' },
+  });
+  await step('register with ADMIN role (400)', 'POST', '/api/auth/register', {
+    body: { email: `x-${Date.now()}@b2boms.test`, password: 'Str0ngPassw0rd', name: 'X', role: 'ADMIN' },
+  });
+  await step('register duplicate email (409)', 'POST', '/api/auth/register', {
+    body: { email, password: 'Str0ngPassw0rd', name: 'Smoke Tester' },
+  });
+  const login = await step('login (200 + HttpOnly cookie)', 'POST', '/api/auth/login', {
+    body: { email, password: 'Str0ngPassw0rd' },
+  });
+  await step('login wrong password (401)', 'POST', '/api/auth/login', {
+    body: { email, password: 'Wr0ngPassword!' },
+  });
+  await step('me with access token (200)', 'GET', '/api/auth/me', { token: login.accessToken });
+  await step('me without token (401)', 'GET', '/api/auth/me');
+  await step('me with malformed token (401)', 'GET', '/api/auth/me', { token: 'a.b.c' });
+  const predecessor = cookie; // cookie issued by login/earlier rotation
+  await step('refresh rotates cookie (200)', 'POST', '/api/auth/refresh', {
+    withCookie: true,
+  });
+  const rotated = results[results.length - 1].setCookies.map((c) => c.split(';')[0]).join('; ');
+  // The rotated-out cookie is spent: presenting it again kills the family.
+  cookie = predecessor;
+  await step('reuse spent cookie -> TOKEN_REUSED (401)', 'POST', '/api/auth/refresh', {
+    withCookie: true,
+  });
+  cookie = rotated; // successor cookie — revoked along with the whole family
+  await step('successor dead after family revoke (401)', 'POST', '/api/auth/refresh', {
+    withCookie: true,
+  });
+  await step('logout (200)', 'POST', '/api/auth/logout', { withCookie: true });
+  await step('refresh after logout (401)', 'POST', '/api/auth/refresh', { withCookie: true });
+  await step('seeded admin login still works (200)', 'POST', '/api/auth/login', {
+    body: { email: 'admin@b2boms.test', password: 'Passw0rd!' },
+    keepCookie: true,
+  });
+
+  const file = `${__dirname}/phase4-auth-smoke.json`;
+  require('fs').writeFileSync(file, JSON.stringify({ results, note: 'accessToken values elided' }, null, 2));
+
+  // Console summary
+  for (const r of results) {
+    const t = r.body && r.body.error ? r.body.error.code : (r.body && (r.body.user ? r.body.user.role || 'ok' : r.body.message || r.body.status || ''));
+    console.log(`${String(r.status).padEnd(4)} ${r.step.padEnd(45)} ${t}`);
+  }
+  const expected = [200, 201, 400, 409, 200, 401, 200, 401, 401, 200, 401, 401, 200, 401, 200];
+  const ok = results.length === expected.length && results.every((r, i) => r.status === expected[i]);
+  console.log(ok ? 'SMOKE: ALL EXPECTED STATUSES MATCH' : 'SMOKE: STATUS MISMATCH!');
+  if (reg.user && reg.user.password) console.log('LEAK: password field present!');
+})().catch((e) => {
+  console.error('SMOKE FAILED:', e.message);
+  process.exit(1);
+});

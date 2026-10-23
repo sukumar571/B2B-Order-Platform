@@ -1,0 +1,12 @@
+﻿
+> b2b-order-management-platform@0.1.0 lint
+> npm --prefix backend run lint && npm --prefix frontend run lint
+
+
+> b2b-oms-backend@0.1.0 lint
+> eslint .
+
+
+> b2b-oms-frontend@0.1.0 lint
+> eslint .
+

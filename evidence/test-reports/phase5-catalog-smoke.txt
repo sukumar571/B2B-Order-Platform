@@ -1,0 +1,70 @@
+﻿[ok  ] 200 GET /api/health ΓÇö health
+[ok  ] 200 GET /api/products?limit=50 ΓÇö anon product list is active-only
+[ok  ] every publicly listed product is active
+[ok  ] list exposes available_stock and no credential columns
+[ok  ] 200 GET /api/products?search=gadget&sort=price&order=desc ΓÇö server-side search + sort by price desc
+[ok  ] search filters to matching products
+[ok  ] price sort is descending
+[ok  ] 200 GET /api/products?page=2&limit=2 ΓÇö pagination page=2&limit=2
+[ok  ] page 2 returns exactly limit rows
+[ok  ] 400 GET /api/products?limit=999 ΓÇö invalid limit is rejected (fail closed)
+[ok  ] 400 GET /api/products?sort=drop_table ΓÇö unknown sort column is rejected (whitelist)
+[ok  ] 400 GET /api/products?role=admin ΓÇö unknown query parameter is rejected (strict)
+[ok  ] 400 GET /api/products/not-a-number ΓÇö malformed id is rejected
+[ok  ] 404 GET /api/products/6 ΓÇö inactive product is invisible to the public
+[ok  ] inactive detail returns NOT_FOUND
+[ok  ] 200 POST /api/auth/login ΓÇö admin login
+[ok  ] 200 POST /api/auth/login ΓÇö customer login
+[ok  ] 200 POST /api/auth/login ΓÇö order-manager (agent) login
+[ok  ] 200 GET /api/products?active_only=false&limit=50 ΓÇö admin can request inactive products too
+[ok  ] admin sees the archived LEGACY-01
+[ok  ] 200 GET /api/products/6 ΓÇö admin may open an inactive product
+[ok  ] 401 POST /api/products ΓÇö anon cannot create products
+[ok  ] 403 POST /api/products ΓÇö customer cannot create products
+[ok  ] 403 POST /api/products ΓÇö agent (order manager) cannot create products
+[ok  ] 400 POST /api/products ΓÇö blank name / negative price / bad sku are rejected
+[ok  ] 201 POST /api/products ΓÇö admin creates a product
+[ok  ] 409 POST /api/products ΓÇö duplicate SKU is rejected
+[ok  ] duplicate returns DUPLICATE_SKU
+[ok  ] 200 GET /api/inventory/low-stock?search=Smoke ΓÇö new product has an inventory row (0 available => low stock)
+[ok  ] the created product appears in low-stock with threshold 5
+[ok  ] 200 PATCH /api/products/10 ΓÇö admin edits the product price
+[ok  ] price change persisted
+[ok  ] 403 PATCH /api/products/10 ΓÇö customer cannot edit products
+[ok  ] 400 PATCH /api/products/10 ΓÇö empty patch body is rejected
+[ok  ] 404 PATCH /api/products/999999999 ΓÇö unknown product id is 404
+[ok  ] 200 PATCH /api/products/10 ΓÇö admin deactivates (archives) the product
+[ok  ] deactivation is a soft delete
+[ok  ] 404 GET /api/products/10 ΓÇö archived product is gone from the public catalog
+[ok  ] archived detail is NOT_FOUND
+[ok  ] 403 GET /api/inventory ΓÇö customer cannot see inventory
+[ok  ] 401 GET /api/inventory ΓÇö anon cannot see inventory
+[ok  ] 200 GET /api/inventory ΓÇö order manager can see inventory
+[ok  ] inventory rows carry physical/reserved/available/threshold
+[ok  ] 200 GET /api/inventory/low-stock ΓÇö low-stock feed only lists rows at or below threshold
+[ok  ] every low-stock row satisfies available <= threshold
+[ok  ] 403 PATCH /api/inventory/10 ΓÇö order manager cannot adjust stock
+[ok  ] 403 PATCH /api/inventory/10 ΓÇö customer cannot adjust stock
+[ok  ] 400 PATCH /api/inventory/10 ΓÇö zero delta is rejected
+[ok  ] 400 PATCH /api/inventory/10 ΓÇö missing reason is rejected
+[ok  ] 400 PATCH /api/inventory/10 ΓÇö fractional quantity is rejected (integer units)
+[ok  ] 200 PATCH /api/inventory/10 ΓÇö admin receives 60 units
+[ok  ] receipt lands at 60 available
+[ok  ] receipt is typed as a stock_receipt
+[ok  ] 409 PATCH /api/inventory/10 ΓÇö adjustment below zero is refused
+[ok  ] oversell returns INSUFFICIENT_STOCK
+[ok  ] 200 GET /api/inventory ΓÇö stock is unchanged after the refused adjustment
+[ok  ] refused adjustment left physical stock at 60
+[ok  ] 200 PATCH /api/inventory/10 ΓÇö admin issues 15 units (manual adjustment)
+[ok  ] issue lands at 45 available
+[ok  ] issue is typed as manual_adjustment
+[ok  ] each successful adjustment wrote exactly one ledger row (2 rows: +60, -15)
+[ok  ] create/update/deactivate/adjust are all audited with the actor role
+[ok  ] the refused oversell wrote no audit row (2 STOCK_ADJUSTED only)
+[ok  ] the audit detail carries delta + resulting availability (no secrets)
+[ok  ] the product row still exists (never hard-deleted)
+[ok  ] dev catalog intact ΓÇö 9 products remain
+
+66/66 smoke checks passed.
+SMOKE: ALL CHECKS PASSED
+Evidence written to ..\evidence\test-reports\phase5-catalog-smoke.json

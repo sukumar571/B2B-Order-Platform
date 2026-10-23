@@ -1,0 +1,97 @@
+﻿
+> b2b-oms-backend@0.1.0 test
+> node --test --test-reporter=spec
+
+Γû╢ GET /api/health
+  Γ£ö returns 200 with status ok JSON body (65.5314ms)
+  Γ£ö sends security headers from helmet (14.2295ms)
+  Γ£ö rejects non-GET methods with a consistent 404 JSON error (9.7497ms)
+Γ£ö GET /api/health (90.9409ms)
+Γû╢ Unknown routes
+  Γ£ö returns consistent JSON 404 envelope with error code (11.4046ms)
+  Γ£ö does not leak stack traces or internals in the 404 body (6.6496ms)
+Γ£ö Unknown routes (18.3983ms)
+Γû╢ Request parsing and error handling
+  Γ£ö malformed JSON body yields 400 INVALID_JSON, not a crash (18.7546ms)
+  Γ£ö oversized JSON body is rejected with 413 (limit from config) (7.8228ms)
+Γ£ö Request parsing and error handling (27.0274ms)
+∩╣ú Authentication over HTTP (isolated test DB) (0.7568ms) # isolated test DB required ΓÇö run: npm run test:integration (uses DATABASE_URL_TEST only)
+Γû╢ auth validators (Zod)
+  Γ£ö accepts a valid registration and normalizes the email to lowercase (5.5934ms)
+  Γ£ö rejects malformed emails, short and complex-less passwords, blank names (2.1185ms)
+  Γ£ö validation details never echo the submitted password (1.2505ms)
+  Γ£ö strict schemas reject unexpected fields ΓÇö role injection attempts fail (1.3ms)
+Γ£ö auth validators (Zod) (12.4178ms)
+Γû╢ token service (JWT)
+  Γ£ö access token round-trips and pins HS256 + iss + aud + typ claims (6.3163ms)
+  Γ£ö malformed tokens are rejected without throwing (0.7541ms)
+  Γ£ö expired tokens are rejected (4.4556ms)
+  Γ£ö wrong-signature tokens are rejected (0.9921ms)
+  Γ£ö wrong issuer / audience are rejected (4.6633ms)
+  Γ£ö alg:none tokens are rejected (3.8416ms)
+  Γ£ö a refresh token envelope can NEVER act as a bearer access token (3.5053ms)
+  Γ£ö refresh raw secrets are only ever exposed as SHA-256 hashes (0.6353ms)
+  Γ£ö extractBearer parses the Authorization header strictly (2.2653ms)
+Γ£ö token service (JWT) (35.0801ms)
+Γû╢ auth service pure helpers
+  Γ£ö toPublicUser strips password material entirely (0.3888ms)
+  Γ£ö ttlMs parses jsonwebtoken-style durations (0.3476ms)
+Γ£ö auth service pure helpers (0.9033ms)
+Γû╢ authorize / ownership middleware
+  Γ£ö authorize() allows any of the listed roles and 403s the rest (0.4744ms)
+  Γ£ö authorize() 401s unauthenticated requests and validates its role list (0.2898ms)
+  Γ£ö requireSelf demands an authenticated identity (0.257ms)
+  Γ£ö requireOwnership blocks cross-user access (IDOR) and hides existence (2.9883ms)
+Γ£ö authorize / ownership middleware (4.2868ms)
+∩╣ú Catalog & inventory over HTTP (isolated test DB) (0.4417ms) # isolated test DB required ΓÇö run: npm run test:integration (uses DATABASE_URL_TEST only)
+Γû╢ createProductSchema
+  Γ£ö applies safe defaults and normalizes money (3.982ms)
+  Γ£ö accepts a JSON number price and trims strings (2.7942ms)
+  Γ£ö rejects blank name, blank sku, negative/zero price and >2-decimal price (2.6008ms)
+  Γ£ö rejects tax_rate outside 0..100 (0.9294ms)
+  Γ£ö rejects negative initial_stock / threshold (2.77ms)
+  Γ£ö STRICT: unknown fields (e.g. role, is_admin) are rejected (0.564ms)
+Γ£ö createProductSchema (15.0552ms)
+Γû╢ updateProductSchema
+  Γ£ö a single field patch is valid (2.5338ms)
+  Γ£ö an empty patch fails (nothing to update) (0.2806ms)
+  Γ£ö STRICT: unknown fields rejected (0.3298ms)
+  Γ£ö booleans coerce from string query-ish values (0.3834ms)
+Γ£ö updateProductSchema (3.8614ms)
+Γû╢ productListQuerySchema
+  Γ£ö defaults (1.0958ms)
+  Γ£ö coerces numeric + boolish query-string params (0.2749ms)
+  Γ£ö invalid sort column, order, and out-of-range pagination fail closed (1.3753ms)
+  Γ£ö sort keys stay aligned with the repository whitelist (1.0387ms)
+Γ£ö productListQuerySchema (4.1839ms)
+Γû╢ productIdParamSchema
+  Γ£ö parses a positive integer id (2.8657ms)
+  Γ£ö rejects non-numeric / zero / negative ids (0.5541ms)
+Γ£ö productIdParamSchema (4.1673ms)
+Γû╢ inventoryListQuerySchema
+  Γ£ö defaults (staff view shows both active + inactive, all stock) (0.8305ms)
+Γ£ö inventoryListQuerySchema (0.932ms)
+Γû╢ updateInventorySchema
+  Γ£ö valid signed delta + reason (0.6299ms)
+  Γ£ö zero delta rejected (0.2961ms)
+  Γ£ö non-integer delta rejected (0.3099ms)
+  Γ£ö missing/blank reason rejected (0.2923ms)
+  Γ£ö STRICT: unknown fields rejected (0.2598ms)
+Γ£ö updateInventorySchema (2.0115ms)
+∩╣ú PostgreSQL integration (DATABASE_URL_TEST) (0.897ms) # isolated test DB required ΓÇö run: npm run test:integration (uses DATABASE_URL_TEST only)
+∩╣ú Migration reversibility (down --all, then up again) (0.1412ms) # isolated test DB required ΓÇö run: npm run test:integration (uses DATABASE_URL_TEST only)
+Γû╢ logger.redact (FR-AUD-05 / NFR-01 secret hygiene)
+  Γ£ö redacts secret-looking keys at any depth (1.2392ms)
+  Γ£ö passes through primitives safely (0.1934ms)
+Γ£ö logger.redact (FR-AUD-05 / NFR-01 secret hygiene) (2.8026ms)
+Γû╢ ApiError
+  Γ£ö factories produce stable codes and statuses (0.4379ms)
+Γ£ö ApiError (0.5957ms)
+Γä╣ tests 51
+Γä╣ suites 19
+Γä╣ pass 51
+Γä╣ fail 0
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 4271.4322

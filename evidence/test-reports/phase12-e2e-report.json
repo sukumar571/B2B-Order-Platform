@@ -1,0 +1,1032 @@
+{
+  "config": {
+    "argv": [
+      "C:\\Program Files\\nodejs\\node.exe",
+      "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\node_modules\\@playwright\\test\\cli.js",
+      "test",
+      "--reporter=list,json"
+    ],
+    "configFile": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\playwright.config.js",
+    "rootDir": "E:/Users/sudhe/B2B Order Management Platform/e2e/tests",
+    "failOnFlakyTests": false,
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\global-setup.js",
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "E:/Users/sudhe/B2B Order Management Platform/e2e/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "E:/Users/sudhe/B2B Order Management Platform/e2e/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "filteredProjects": [
+      {
+        "grep": {},
+        "grepInvert": null,
+        "outputDir": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "name": "chromium",
+        "testDir": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests",
+        "snapshotDir": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests",
+        "testIgnore": [],
+        "testMatch": "**/*.@(spec|test).?(c|m)[jt]s?(x)",
+        "timeout": 30000,
+        "use": {
+          "baseURL": "http://localhost:5173",
+          "trace": "retain-on-failure",
+          "screenshot": "only-on-failure",
+          "video": "off",
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.8078.4 Safari/537.36",
+          "viewport": {
+            "width": 1280,
+            "height": 720
+          },
+          "screen": {
+            "width": 1920,
+            "height": 1080
+          },
+          "deviceScaleFactor": 1,
+          "isMobile": false,
+          "hasTouch": false,
+          "defaultBrowserType": "chromium"
+        },
+        "dependencies": [],
+        "ignoreSnapshots": false,
+        "__projectId": "chromium"
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list"
+      ],
+      [
+        "json"
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "default",
+    "updateSourceMethod": "patch",
+    "version": "1.64.1",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "critical-journeys.spec.js",
+      "file": "critical-journeys.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Critical business journeys",
+          "file": "critical-journeys.spec.js",
+          "line": 34,
+          "column": 6,
+          "specs": [
+            {
+              "title": "1. Admin logs in and creates a product",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests\\critical-journeys.spec.js",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 4644,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T12:58:17.463Z",
+                      "annotations": [
+                        {
+                          "type": "serial",
+                          "location": {
+                            "file": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests\\critical-journeys.spec.js",
+                            "line": 0,
+                            "column": 0
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b23f36138f6e7dc47398-b1b51393e61fff3e4e5d",
+              "file": "critical-journeys.spec.js",
+              "line": 35,
+              "column": 3
+            },
+            {
+              "title": "2. Admin updates stock",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests\\critical-journeys.spec.js",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2160,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T12:58:22.921Z",
+                      "annotations": [
+                        {
+                          "type": "serial",
+                          "location": {
+                            "file": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests\\critical-journeys.spec.js",
+                            "line": 0,
+                            "column": 0
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b23f36138f6e7dc47398-f2fff56fa851f7b35715",
+              "file": "critical-journeys.spec.js",
+              "line": 55,
+              "column": 3
+            },
+            {
+              "title": "3. Customer registers, then logs in",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests\\critical-journeys.spec.js",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2771,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T12:58:25.118Z",
+                      "annotations": [
+                        {
+                          "type": "serial",
+                          "location": {
+                            "file": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests\\critical-journeys.spec.js",
+                            "line": 0,
+                            "column": 0
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b23f36138f6e7dc47398-b3a1e006851d5fd5081d",
+              "file": "critical-journeys.spec.js",
+              "line": 79,
+              "column": 3
+            },
+            {
+              "title": "4. Customer browses products and adds one to the cart",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests\\critical-journeys.spec.js",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2789,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T12:58:27.917Z",
+                      "annotations": [
+                        {
+                          "type": "serial",
+                          "location": {
+                            "file": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests\\critical-journeys.spec.js",
+                            "line": 0,
+                            "column": 0
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b23f36138f6e7dc47398-c98c220c3dd396c211a0",
+              "file": "critical-journeys.spec.js",
+              "line": 93,
+              "column": 3
+            },
+            {
+              "title": "5. Customer places an order (server-priced, stock reserved)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests\\critical-journeys.spec.js",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2421,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T12:58:30.730Z",
+                      "annotations": [
+                        {
+                          "type": "serial",
+                          "location": {
+                            "file": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests\\critical-journeys.spec.js",
+                            "line": 0,
+                            "column": 0
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b23f36138f6e7dc47398-230da80aee7d8648c4c8",
+              "file": "critical-journeys.spec.js",
+              "line": 112,
+              "column": 3
+            },
+            {
+              "title": "6. Stock reservation is verified on the inventory ledger",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests\\critical-journeys.spec.js",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2037,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T12:58:33.175Z",
+                      "annotations": [
+                        {
+                          "type": "serial",
+                          "location": {
+                            "file": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests\\critical-journeys.spec.js",
+                            "line": 0,
+                            "column": 0
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b23f36138f6e7dc47398-4e9b24f7f3aca75c2465",
+              "file": "critical-journeys.spec.js",
+              "line": 125,
+              "column": 3
+            },
+            {
+              "title": "7. Order manager processes the order through to shipment (invoice minted)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests\\critical-journeys.spec.js",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2090,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T12:58:35.261Z",
+                      "annotations": [
+                        {
+                          "type": "serial",
+                          "location": {
+                            "file": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests\\critical-journeys.spec.js",
+                            "line": 0,
+                            "column": 0
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b23f36138f6e7dc47398-af81ff8c64189cbd2410",
+              "file": "critical-journeys.spec.js",
+              "line": 131,
+              "column": 3
+            },
+            {
+              "title": "8. Customer views the order and its generated invoice",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests\\critical-journeys.spec.js",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2630,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T12:58:37.373Z",
+                      "annotations": [
+                        {
+                          "type": "serial",
+                          "location": {
+                            "file": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests\\critical-journeys.spec.js",
+                            "line": 0,
+                            "column": 0
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b23f36138f6e7dc47398-2b05d3107fa8146f6bf9",
+              "file": "critical-journeys.spec.js",
+              "line": 148,
+              "column": 3
+            },
+            {
+              "title": "9. Admin views audit events and dashboard statistics",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests\\critical-journeys.spec.js",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 2131,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T12:58:40.044Z",
+                      "annotations": [
+                        {
+                          "type": "serial",
+                          "location": {
+                            "file": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests\\critical-journeys.spec.js",
+                            "line": 0,
+                            "column": 0
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b23f36138f6e7dc47398-81b7a54ade0e9f99a10c",
+              "file": "critical-journeys.spec.js",
+              "line": 167,
+              "column": 3
+            },
+            {
+              "title": "10. A customer is denied another customer’s order and invoice",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests\\critical-journeys.spec.js",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 3564,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T12:58:42.216Z",
+                      "annotations": [
+                        {
+                          "type": "serial",
+                          "location": {
+                            "file": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests\\critical-journeys.spec.js",
+                            "line": 0,
+                            "column": 0
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "b23f36138f6e7dc47398-f84023f4d223bdf10b35",
+              "file": "critical-journeys.spec.js",
+              "line": 188,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "negative-paths.spec.js",
+      "file": "negative-paths.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Negative and adversarial paths",
+          "file": "negative-paths.spec.js",
+          "line": 45,
+          "column": 6,
+          "specs": [
+            {
+              "title": "Insufficient stock is rejected (409) and does not alter the cart",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests\\negative-paths.spec.js",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 125,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T12:58:45.901Z",
+                      "annotations": [
+                        {
+                          "type": "serial",
+                          "location": {
+                            "file": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests\\negative-paths.spec.js",
+                            "line": 0,
+                            "column": 0
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "513e96fab713b4be1e24-227fca382a22d6596c4f",
+              "file": "negative-paths.spec.js",
+              "line": 63,
+              "column": 3
+            },
+            {
+              "title": "Invalid quantities are rejected by validation (400)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests\\negative-paths.spec.js",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 249,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T12:58:47.681Z",
+                      "annotations": [
+                        {
+                          "type": "serial",
+                          "location": {
+                            "file": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests\\negative-paths.spec.js",
+                            "line": 0,
+                            "column": 0
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "513e96fab713b4be1e24-36d9f84d09570f5efd30",
+              "file": "negative-paths.spec.js",
+              "line": 82,
+              "column": 3
+            },
+            {
+              "title": "Inactive products cannot be added or ordered (404)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests\\negative-paths.spec.js",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 89,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T12:58:47.951Z",
+                      "annotations": [
+                        {
+                          "type": "serial",
+                          "location": {
+                            "file": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests\\negative-paths.spec.js",
+                            "line": 0,
+                            "column": 0
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "513e96fab713b4be1e24-b9582a93d6a240891a29",
+              "file": "negative-paths.spec.js",
+              "line": 93,
+              "column": 3
+            },
+            {
+              "title": "A failing multi-line order rolls back atomically (no order, stock unchanged)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests\\negative-paths.spec.js",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 224,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T12:58:48.065Z",
+                      "annotations": [
+                        {
+                          "type": "serial",
+                          "location": {
+                            "file": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests\\negative-paths.spec.js",
+                            "line": 0,
+                            "column": 0
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "513e96fab713b4be1e24-36ad1dd73bcb15c93a51",
+              "file": "negative-paths.spec.js",
+              "line": 102,
+              "column": 3
+            },
+            {
+              "title": "Duplicate requests are idempotent (one order, replayed response)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests\\negative-paths.spec.js",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 136,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T12:58:48.305Z",
+                      "annotations": [
+                        {
+                          "type": "serial",
+                          "location": {
+                            "file": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests\\negative-paths.spec.js",
+                            "line": 0,
+                            "column": 0
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "513e96fab713b4be1e24-b624ce92bcb63a5bf1fc",
+              "file": "negative-paths.spec.js",
+              "line": 144,
+              "column": 3
+            },
+            {
+              "title": "Unauthorized actions are refused at the API boundary",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests\\negative-paths.spec.js",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 80,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T12:58:48.457Z",
+                      "annotations": [
+                        {
+                          "type": "serial",
+                          "location": {
+                            "file": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests\\negative-paths.spec.js",
+                            "line": 0,
+                            "column": 0
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "513e96fab713b4be1e24-7b897a9daf73e15c8a4d",
+              "file": "negative-paths.spec.js",
+              "line": 175,
+              "column": 3
+            },
+            {
+              "title": "A disabled account cannot obtain a token (403)",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "serial",
+                      "location": {
+                        "file": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests\\negative-paths.spec.js",
+                        "line": 0,
+                        "column": 0
+                      }
+                    }
+                  ],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 148,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-10-23T12:58:48.554Z",
+                      "annotations": [
+                        {
+                          "type": "serial",
+                          "location": {
+                            "file": "E:\\Users\\sudhe\\B2B Order Management Platform\\e2e\\tests\\negative-paths.spec.js",
+                            "line": 0,
+                            "column": 0
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "513e96fab713b4be1e24-1558cb888b36440fe9a0",
+              "file": "negative-paths.spec.js",
+              "line": 201,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-10-23T12:58:00.993Z",
+    "duration": 50453.247,
+    "expected": 17,
+    "skipped": 0,
+    "unexpected": 0,
+    "flaky": 0
+  }
+}

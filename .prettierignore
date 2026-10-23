@@ -1,0 +1,18 @@
+node_modules/
+dist/
+build/
+coverage/
+package-lock.json
+**/package-lock.json
+docs/
+evidence/
+*.md
+
+# Playwright-generated report/run artifacts (machine output, not source)
+e2e/playwright-report/
+e2e/test-results/
+e2e/blob-report/
+e2e/e2e-report.json
+.e2e-run.log
+.be-*.log
+.fe-*.log

@@ -1,0 +1,157 @@
+﻿
+> b2b-oms-backend@0.1.0 test
+> node --test --test-reporter=spec
+
+Γû╢ GET /api/health
+  Γ£ö returns 200 with status ok JSON body (36.168ms)
+  Γ£ö sends security headers from helmet (8.2681ms)
+  Γ£ö rejects non-GET methods with a consistent 404 JSON error (6.9267ms)
+Γ£ö GET /api/health (52.4756ms)
+Γû╢ Unknown routes
+  Γ£ö returns consistent JSON 404 envelope with error code (5.4807ms)
+  Γ£ö does not leak stack traces or internals in the 404 body (6.8225ms)
+Γ£ö Unknown routes (12.5561ms)
+Γû╢ Request parsing and error handling
+  Γ£ö malformed JSON body yields 400 INVALID_JSON, not a crash (153.4356ms)
+  Γ£ö oversized JSON body is rejected with 413 (limit from config) (6.8327ms)
+Γ£ö Request parsing and error handling (160.5945ms)
+∩╣ú Authentication over HTTP (isolated test DB) (0.7628ms) # isolated test DB required ΓÇö run: npm run test:integration (uses DATABASE_URL_TEST only)
+Γû╢ auth validators (Zod)
+  Γ£ö accepts a valid registration and normalizes the email to lowercase (2.5817ms)
+  Γ£ö rejects malformed emails, short and complex-less passwords, blank names (1.9003ms)
+  Γ£ö validation details never echo the submitted password (0.5488ms)
+  Γ£ö strict schemas reject unexpected fields ΓÇö role injection attempts fail (1.3633ms)
+Γ£ö auth validators (Zod) (7.3665ms)
+Γû╢ token service (JWT)
+  Γ£ö access token round-trips and pins HS256 + iss + aud + typ claims (8.8287ms)
+  Γ£ö malformed tokens are rejected without throwing (0.3279ms)
+  Γ£ö expired tokens are rejected (0.6705ms)
+  Γ£ö wrong-signature tokens are rejected (0.3779ms)
+  Γ£ö wrong issuer / audience are rejected (0.8882ms)
+  Γ£ö alg:none tokens are rejected (0.3592ms)
+  Γ£ö a refresh token envelope can NEVER act as a bearer access token (0.9982ms)
+  Γ£ö refresh raw secrets are only ever exposed as SHA-256 hashes (0.3676ms)
+  Γ£ö extractBearer parses the Authorization header strictly (0.2396ms)
+Γ£ö token service (JWT) (13.5604ms)
+Γû╢ auth service pure helpers
+  Γ£ö toPublicUser strips password material entirely (0.2228ms)
+  Γ£ö ttlMs parses jsonwebtoken-style durations (0.2204ms)
+Γ£ö auth service pure helpers (0.5328ms)
+Γû╢ authorize / ownership middleware
+  Γ£ö authorize() allows any of the listed roles and 403s the rest (0.2721ms)
+  Γ£ö authorize() 401s unauthenticated requests and validates its role list (0.1275ms)
+  Γ£ö requireSelf demands an authenticated identity (0.092ms)
+  Γ£ö requireOwnership blocks cross-user access (IDOR) and hides existence (0.2534ms)
+Γ£ö authorize / ownership middleware (0.8742ms)
+∩╣ú Shopping cart over HTTP (isolated test DB) (0.7573ms) # isolated test DB required ΓÇö run: npm run test:integration (uses DATABASE_URL_TEST only)
+Γû╢ money.toCents / fromCents
+  Γ£ö round-trips 2-decimal strings exactly (0.6987ms)
+  Γ£ö rejects malformed money with more than 2 decimals or negatives (0.2486ms)
+Γ£ö money.toCents / fromCents (1.7212ms)
+Γû╢ money.computeLine (AC-CART-02 fixture)
+  Γ£ö 19.99 ├ù 3 @ 7.5% ΓåÆ line_total 59.97, line_tax 4.50 (half-up) (0.2623ms)
+  Γ£ö tax rounds HALF-UP at the .5 boundary (0.1675ms)
+  Γ£ö zero tax rate yields zero tax (0.1549ms)
+  Γ£ö rejects a non-positive or fractional quantity (0.1238ms)
+Γ£ö money.computeLine (AC-CART-02 fixture) (0.9388ms)
+Γû╢ money.summarize
+  Γ£ö grand_total = subtotal + tax_total to the cent across multiple lines (0.2664ms)
+  Γ£ö strips internal cent bookkeeping from the exposed lines (0.2599ms)
+  Γ£ö empty cart totals are exact zeros (2.5816ms)
+Γ£ö money.summarize (3.3505ms)
+Γû╢ addCartItemSchema
+  Γ£ö parses a positive product id and defaults quantity to 1 (2.19ms)
+  Γ£ö accepts a numeric string quantity and coerces it to an int (0.2365ms)
+  Γ£ö rejects quantity < 1, zero, negative and fractional (0.936ms)
+  Γ£ö rejects a quantity above the documented per-line maximum (0.2276ms)
+  Γ£ö rejects a non-positive or non-numeric product id (1.701ms)
+  Γ£ö is strict ΓÇö a client-supplied owner (customer_id/cart_id/role) is rejected (0.7677ms)
+  Γ£ö rejects a missing product id (0.2917ms)
+Γ£ö addCartItemSchema (6.822ms)
+Γû╢ updateCartItemSchema
+  Γ£ö requires an absolute positive quantity (1.2348ms)
+Γ£ö updateCartItemSchema (1.3574ms)
+Γû╢ cartItemIdParamSchema
+  Γ£ö parses a positive integer id and rejects junk (0.868ms)
+Γ£ö cartItemIdParamSchema (0.9544ms)
+∩╣ú Catalog & inventory over HTTP (isolated test DB) (0.7785ms) # isolated test DB required ΓÇö run: npm run test:integration (uses DATABASE_URL_TEST only)
+Γû╢ createProductSchema
+  Γ£ö applies safe defaults and normalizes money (4.8196ms)
+  Γ£ö accepts a JSON number price and trims strings (0.686ms)
+  Γ£ö rejects blank name, blank sku, negative/zero price and >2-decimal price (1.4263ms)
+  Γ£ö rejects tax_rate outside 0..100 (0.6797ms)
+  Γ£ö rejects negative initial_stock / threshold (0.971ms)
+  Γ£ö STRICT: unknown fields (e.g. role, is_admin) are rejected (0.6875ms)
+Γ£ö createProductSchema (10.8977ms)
+Γû╢ updateProductSchema
+  Γ£ö a single field patch is valid (2.4588ms)
+  Γ£ö an empty patch fails (nothing to update) (2.0217ms)
+  Γ£ö STRICT: unknown fields rejected (2.5678ms)
+  Γ£ö booleans coerce from string query-ish values (0.5406ms)
+Γ£ö updateProductSchema (8.1287ms)
+Γû╢ productListQuerySchema
+  Γ£ö defaults (1.0814ms)
+  Γ£ö coerces numeric + boolish query-string params (0.2549ms)
+  Γ£ö invalid sort column, order, and out-of-range pagination fail closed (1.41ms)
+  Γ£ö sort keys stay aligned with the repository whitelist (0.2333ms)
+Γ£ö productListQuerySchema (3.2636ms)
+Γû╢ productIdParamSchema
+  Γ£ö parses a positive integer id (0.5533ms)
+  Γ£ö rejects non-numeric / zero / negative ids (0.3844ms)
+Γ£ö productIdParamSchema (1.3143ms)
+Γû╢ inventoryListQuerySchema
+  Γ£ö defaults (staff view shows both active + inactive, all stock) (1.0405ms)
+Γ£ö inventoryListQuerySchema (1.2117ms)
+Γû╢ updateInventorySchema
+  Γ£ö valid signed delta + reason (2.629ms)
+  Γ£ö zero delta rejected (1.1356ms)
+  Γ£ö non-integer delta rejected (3.6058ms)
+  Γ£ö missing/blank reason rejected (0.5244ms)
+  Γ£ö STRICT: unknown fields rejected (0.6003ms)
+Γ£ö updateInventorySchema (9.6254ms)
+∩╣ú PostgreSQL integration (DATABASE_URL_TEST) (0.8835ms) # isolated test DB required ΓÇö run: npm run test:integration (uses DATABASE_URL_TEST only)
+∩╣ú Migration reversibility (down --all, then up again) (0.1882ms) # isolated test DB required ΓÇö run: npm run test:integration (uses DATABASE_URL_TEST only)
+∩╣ú Invoices over HTTP (isolated test DB) (0.4461ms) # isolated test DB required ΓÇö run: npm run test:integration (uses DATABASE_URL_TEST only)
+Γû╢ Invoice numbering + status helpers (FR-INV-02 / D-25)
+  Γ£ö formatInvoiceNumber produces INV-YYYY-NNNNNN zero-padded to 6 digits (3.8625ms)
+  Γ£ö counterPeriodForYear keys the sequence by calendar year (0.2875ms)
+  Γ£ö only an issued invoice can be voided; voided is terminal (1.2544ms)
+  Γ£ö a demo notice + distributor block are always present (simulated business) (0.3661ms)
+Γ£ö Invoice numbering + status helpers (FR-INV-02 / D-25) (8.0498ms)
+Γû╢ Invoice Zod schemas are strict and tamper-proof (FR-INV-04)
+  Γ£ö invoiceListQuerySchema defaults paging and validates the status enum (4.3702ms)
+  Γ£ö invoiceIdParamSchema accepts positive ints and rejects junk / unknown keys (3.0572ms)
+  Γ£ö voidInvoiceSchema requires a 3ΓÇô500 char reason and rejects injected money (1.549ms)
+Γ£ö Invoice Zod schemas are strict and tamper-proof (FR-INV-04) (11.2569ms)
+∩╣ú Orders over HTTP (isolated test DB) (0.4493ms) # isolated test DB required ΓÇö run: npm run test:integration (uses DATABASE_URL_TEST only)
+Γû╢ Order lifecycle matrix (FR-ORD-07)
+  Γ£ö forward edges are exactly the one-step chain (1.024ms)
+  Γ£ö no skipping, no backwards, terminals have no outgoing edge (2.5371ms)
+  Γ£ö cancellation is only legal pre-shipment (pending/confirmed) (0.7184ms)
+Γ£ö Order lifecycle matrix (FR-ORD-07) (7.2084ms)
+Γû╢ Order request normalization (idempotency matching)
+  Γ£ö mergeLines sums duplicate product ids and sorts by id (0.6006ms)
+  Γ£ö fingerprint is order-independent and stable (1.1428ms)
+Γ£ö Order request normalization (idempotency matching) (2.0535ms)
+Γû╢ Order Zod schemas are strict and price-agnostic
+  Γ£ö createOrderSchema accepts items[] and an empty body (cart order) (4.3505ms)
+  Γ£ö createOrderSchema rejects client prices, ids <= 0, bad quantities and unknown fields (2.3194ms)
+  Γ£ö updateOrderStatusSchema accepts lifecycle values only (1.15ms)
+  Γ£ö cancelOrderSchema requires a meaningful reason (2.4764ms)
+  Γ£ö orderListQuerySchema defaults paging and validates status enum (1.6055ms)
+Γ£ö Order Zod schemas are strict and price-agnostic (12.4878ms)
+Γû╢ logger.redact (FR-AUD-05 / NFR-01 secret hygiene)
+  Γ£ö redacts secret-looking keys at any depth (1.1774ms)
+  Γ£ö passes through primitives safely (0.1717ms)
+Γ£ö logger.redact (FR-AUD-05 / NFR-01 secret hygiene) (2.6771ms)
+Γû╢ ApiError
+  Γ£ö factories produce stable codes and statuses (0.3548ms)
+Γ£ö ApiError (0.5019ms)
+Γä╣ tests 86
+Γä╣ suites 33
+Γä╣ pass 86
+Γä╣ fail 0
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 5543.2295

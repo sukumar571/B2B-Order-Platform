@@ -1,0 +1,7 @@
+# Playwright generated artifacts — never committed
+playwright-report/
+test-results/
+blob-report/
+e2e-report.json
+.env
+node_modules/

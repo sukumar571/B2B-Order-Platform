@@ -1,0 +1,20 @@
+﻿
+> b2b-oms-frontend@0.1.0 test
+> vitest run
+
+
+[1m[46m RUN [49m[22m [36mv3.2.7 [39m[90mE:/Users/sudhe/B2B Order Management Platform/frontend[39m
+
+ [32mΓ£ô[39m src/test/pagination.test.js [2m([22m[2m3 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32mΓ£ô[39m src/test/App.test.jsx [2m([22m[2m2 tests[22m[2m)[22m[33m 465[2mms[22m[39m
+   [33m[2mΓ£ô[22m[39m App landing page health check[2m > [22mshows loading, then the success state once the API responds [33m 332[2mms[22m[39m
+ [32mΓ£ô[39m src/test/catalog.test.jsx [2m([22m[2m16 tests[22m[2m)[22m[33m 2668[2mms[22m[39m
+   [33m[2mΓ£ô[22m[39m AdminProductsPage (ADMIN only)[2m > [22msurfaces backend validation details from the add-product form [33m 553[2mms[22m[39m
+   [33m[2mΓ£ô[22m[39m InventoryPage (ADMIN / ORDER_MANAGER)[2m > [22madmin adjustment PATCHes /api/inventory/:id and shows the audited result [33m 464[2mms[22m[39m
+   [33m[2mΓ£ô[22m[39m InventoryPage (ADMIN / ORDER_MANAGER)[2m > [22mshows the INSUFFICIENT_STOCK error the backend returns for an over-drawdown [33m 500[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m3 passed[39m[22m[90m (3)[39m
+[2m      Tests [22m [1m[32m21 passed[39m[22m[90m (21)[39m
+[2m   Start at [22m 01:00:39
+[2m   Duration [22m 16.59s[2m (transform 1.28s, setup 8.85s, collect 3.21s, tests 3.14s, environment 23.93s, prepare 3.19s)[22m
+

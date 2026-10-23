@@ -1,0 +1,20 @@
+# Build context = ./backend. Keep the image small and secret-free.
+node_modules
+npm-debug.log*
+*.log
+
+# NEVER let environment files or secrets reach the image (requirements.md C-06).
+# Only the .env.example template is allowed, and the Dockerfile does not COPY it.
+.env
+.env.*
+!.env.example
+
+# Not needed at runtime
+tests
+coverage
+.eslintcache
+Dockerfile
+.dockerignore
+docker-compose*.yml
+.vscode
+.idea

@@ -1,0 +1,897 @@
+{
+  "ranAt": "2026-10-21T19:18:44.901Z",
+  "base": "http://localhost:4100",
+  "totalSteps": 66,
+  "failures": 0,
+  "results": [
+    {
+      "name": "health",
+      "method": "GET",
+      "path": "/api/health",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true
+    },
+    {
+      "name": "anon product list is active-only",
+      "method": "GET",
+      "path": "/api/products?limit=50",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true,
+      "meta": {
+        "page": 1,
+        "limit": 50,
+        "total": 6
+      },
+      "count": 6
+    },
+    {
+      "name": "assert: every publicly listed product is active",
+      "pass": true,
+      "detail": [
+        [
+          "WIDGET-01",
+          true
+        ],
+        [
+          "WIDGET-02",
+          true
+        ],
+        [
+          "CABLE-X5",
+          true
+        ],
+        [
+          "GADGET-A",
+          true
+        ],
+        [
+          "GADGET-B",
+          true
+        ],
+        [
+          "SMOKE-1792610272890",
+          true
+        ]
+      ],
+      "assert": true
+    },
+    {
+      "name": "assert: list exposes available_stock and no credential columns",
+      "pass": true,
+      "detail": [
+        "id",
+        "sku",
+        "name",
+        "description",
+        "unit_price",
+        "tax_rate",
+        "is_active",
+        "physical_quantity",
+        "reserved_quantity",
+        "available_stock",
+        "low_stock_threshold",
+        "created_at",
+        "updated_at"
+      ],
+      "assert": true
+    },
+    {
+      "name": "server-side search + sort by price desc",
+      "method": "GET",
+      "path": "/api/products?search=gadget&sort=price&order=desc",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true,
+      "meta": {
+        "page": 1,
+        "limit": 20,
+        "total": 2
+      },
+      "count": 2
+    },
+    {
+      "name": "assert: search filters to matching products",
+      "pass": true,
+      "detail": [
+        "Smart Gadget Alpha",
+        "Smart Gadget Beta"
+      ],
+      "assert": true
+    },
+    {
+      "name": "assert: price sort is descending",
+      "pass": true,
+      "detail": [
+        129,
+        79.9
+      ],
+      "assert": true
+    },
+    {
+      "name": "pagination page=2&limit=2",
+      "method": "GET",
+      "path": "/api/products?page=2&limit=2",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true,
+      "meta": {
+        "page": 2,
+        "limit": 2,
+        "total": 6
+      },
+      "count": 2
+    },
+    {
+      "name": "assert: page 2 returns exactly limit rows",
+      "pass": true,
+      "detail": {
+        "page": 2,
+        "limit": 2,
+        "total": 6
+      },
+      "assert": true
+    },
+    {
+      "name": "invalid limit is rejected (fail closed)",
+      "method": "GET",
+      "path": "/api/products?limit=999",
+      "status": 400,
+      "expected": [
+        400
+      ],
+      "pass": true,
+      "error": {
+        "code": "VALIDATION_ERROR",
+        "message": "Request payload validation failed"
+      }
+    },
+    {
+      "name": "unknown sort column is rejected (whitelist)",
+      "method": "GET",
+      "path": "/api/products?sort=drop_table",
+      "status": 400,
+      "expected": [
+        400
+      ],
+      "pass": true,
+      "error": {
+        "code": "VALIDATION_ERROR",
+        "message": "Request payload validation failed"
+      }
+    },
+    {
+      "name": "unknown query parameter is rejected (strict)",
+      "method": "GET",
+      "path": "/api/products?role=admin",
+      "status": 400,
+      "expected": [
+        400
+      ],
+      "pass": true,
+      "error": {
+        "code": "VALIDATION_ERROR",
+        "message": "Request payload validation failed"
+      }
+    },
+    {
+      "name": "malformed id is rejected",
+      "method": "GET",
+      "path": "/api/products/not-a-number",
+      "status": 400,
+      "expected": [
+        400
+      ],
+      "pass": true,
+      "error": {
+        "code": "VALIDATION_ERROR",
+        "message": "Request payload validation failed"
+      }
+    },
+    {
+      "name": "inactive product is invisible to the public",
+      "method": "GET",
+      "path": "/api/products/6",
+      "status": 404,
+      "expected": [
+        404
+      ],
+      "pass": true,
+      "error": {
+        "code": "NOT_FOUND",
+        "message": "Product not found"
+      }
+    },
+    {
+      "name": "assert: inactive detail returns NOT_FOUND",
+      "pass": true,
+      "detail": {
+        "code": "NOT_FOUND",
+        "message": "Product not found"
+      },
+      "assert": true
+    },
+    {
+      "name": "admin login",
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true
+    },
+    {
+      "name": "customer login",
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true
+    },
+    {
+      "name": "order-manager (agent) login",
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true
+    },
+    {
+      "name": "admin can request inactive products too",
+      "method": "GET",
+      "path": "/api/products?active_only=false&limit=50",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true,
+      "meta": {
+        "page": 1,
+        "limit": 50,
+        "total": 8
+      },
+      "count": 8
+    },
+    {
+      "name": "assert: admin sees the archived LEGACY-01",
+      "pass": true,
+      "detail": [
+        "WIDGET-01",
+        "LEGACY-01",
+        "WIDGET-02",
+        "CABLE-X5",
+        "GADGET-A",
+        "GADGET-B",
+        "SMOKE-1792610272890",
+        "SMOKE-1792610299467"
+      ],
+      "assert": true
+    },
+    {
+      "name": "admin may open an inactive product",
+      "method": "GET",
+      "path": "/api/products/6",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true
+    },
+    {
+      "name": "anon cannot create products",
+      "method": "POST",
+      "path": "/api/products",
+      "status": 401,
+      "expected": [
+        401
+      ],
+      "pass": true,
+      "error": {
+        "code": "UNAUTHENTICATED",
+        "message": "Authentication required"
+      }
+    },
+    {
+      "name": "customer cannot create products",
+      "method": "POST",
+      "path": "/api/products",
+      "status": 403,
+      "expected": [
+        403
+      ],
+      "pass": true,
+      "error": {
+        "code": "FORBIDDEN",
+        "message": "You do not have permission to perform this action"
+      }
+    },
+    {
+      "name": "agent (order manager) cannot create products",
+      "method": "POST",
+      "path": "/api/products",
+      "status": 403,
+      "expected": [
+        403
+      ],
+      "pass": true,
+      "error": {
+        "code": "FORBIDDEN",
+        "message": "You do not have permission to perform this action"
+      }
+    },
+    {
+      "name": "blank name / negative price / bad sku are rejected",
+      "method": "POST",
+      "path": "/api/products",
+      "status": 400,
+      "expected": [
+        400
+      ],
+      "pass": true,
+      "error": {
+        "code": "VALIDATION_ERROR",
+        "message": "Request payload validation failed"
+      }
+    },
+    {
+      "name": "admin creates a product",
+      "method": "POST",
+      "path": "/api/products",
+      "status": 201,
+      "expected": [
+        201
+      ],
+      "pass": true
+    },
+    {
+      "name": "duplicate SKU is rejected",
+      "method": "POST",
+      "path": "/api/products",
+      "status": 409,
+      "expected": [
+        409
+      ],
+      "pass": true,
+      "error": {
+        "code": "DUPLICATE_SKU",
+        "message": "A product with this SKU already exists"
+      }
+    },
+    {
+      "name": "assert: duplicate returns DUPLICATE_SKU",
+      "pass": true,
+      "detail": {
+        "code": "DUPLICATE_SKU",
+        "message": "A product with this SKU already exists"
+      },
+      "assert": true
+    },
+    {
+      "name": "new product has an inventory row (0 available => low stock)",
+      "method": "GET",
+      "path": "/api/inventory/low-stock?search=Smoke",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true,
+      "meta": {
+        "page": 1,
+        "limit": 20,
+        "total": 2
+      },
+      "count": 2
+    },
+    {
+      "name": "assert: the created product appears in low-stock with threshold 5",
+      "pass": true,
+      "detail": [
+        [
+          "SMOKE-1792610272890",
+          0,
+          5
+        ],
+        [
+          "SMOKE-1792610323131",
+          0,
+          5
+        ]
+      ],
+      "assert": true
+    },
+    {
+      "name": "admin edits the product price",
+      "method": "PATCH",
+      "path": "/api/products/10",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true
+    },
+    {
+      "name": "assert: price change persisted",
+      "pass": true,
+      "detail": "12.34",
+      "assert": true
+    },
+    {
+      "name": "customer cannot edit products",
+      "method": "PATCH",
+      "path": "/api/products/10",
+      "status": 403,
+      "expected": [
+        403
+      ],
+      "pass": true,
+      "error": {
+        "code": "FORBIDDEN",
+        "message": "You do not have permission to perform this action"
+      }
+    },
+    {
+      "name": "empty patch body is rejected",
+      "method": "PATCH",
+      "path": "/api/products/10",
+      "status": 400,
+      "expected": [
+        400
+      ],
+      "pass": true,
+      "error": {
+        "code": "VALIDATION_ERROR",
+        "message": "Request payload validation failed"
+      }
+    },
+    {
+      "name": "unknown product id is 404",
+      "method": "PATCH",
+      "path": "/api/products/999999999",
+      "status": 404,
+      "expected": [
+        404
+      ],
+      "pass": true,
+      "error": {
+        "code": "NOT_FOUND",
+        "message": "Product not found"
+      }
+    },
+    {
+      "name": "admin deactivates (archives) the product",
+      "method": "PATCH",
+      "path": "/api/products/10",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true
+    },
+    {
+      "name": "assert: deactivation is a soft delete",
+      "pass": true,
+      "detail": false,
+      "assert": true
+    },
+    {
+      "name": "archived product is gone from the public catalog",
+      "method": "GET",
+      "path": "/api/products/10",
+      "status": 404,
+      "expected": [
+        404
+      ],
+      "pass": true,
+      "error": {
+        "code": "NOT_FOUND",
+        "message": "Product not found"
+      }
+    },
+    {
+      "name": "assert: archived detail is NOT_FOUND",
+      "pass": true,
+      "detail": {
+        "code": "NOT_FOUND",
+        "message": "Product not found"
+      },
+      "assert": true
+    },
+    {
+      "name": "customer cannot see inventory",
+      "method": "GET",
+      "path": "/api/inventory",
+      "status": 403,
+      "expected": [
+        403
+      ],
+      "pass": true,
+      "error": {
+        "code": "FORBIDDEN",
+        "message": "You do not have permission to perform this action"
+      }
+    },
+    {
+      "name": "anon cannot see inventory",
+      "method": "GET",
+      "path": "/api/inventory",
+      "status": 401,
+      "expected": [
+        401
+      ],
+      "pass": true,
+      "error": {
+        "code": "UNAUTHENTICATED",
+        "message": "Authentication required"
+      }
+    },
+    {
+      "name": "order manager can see inventory",
+      "method": "GET",
+      "path": "/api/inventory",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true,
+      "meta": {
+        "page": 1,
+        "limit": 20,
+        "total": 9
+      },
+      "count": 9
+    },
+    {
+      "name": "assert: inventory rows carry physical/reserved/available/threshold",
+      "pass": true,
+      "detail": [
+        "product_id",
+        "sku",
+        "name",
+        "is_active",
+        "physical_quantity",
+        "reserved_quantity",
+        "available_quantity",
+        "low_stock_threshold",
+        "is_low_stock"
+      ],
+      "assert": true
+    },
+    {
+      "name": "low-stock feed only lists rows at or below threshold",
+      "method": "GET",
+      "path": "/api/inventory/low-stock",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true,
+      "meta": {
+        "page": 1,
+        "limit": 20,
+        "total": 4
+      },
+      "count": 4
+    },
+    {
+      "name": "assert: every low-stock row satisfies available <= threshold",
+      "pass": true,
+      "detail": [
+        [
+          "LEGACY-01",
+          3,
+          20
+        ],
+        [
+          "GADGET-B",
+          15,
+          20
+        ],
+        [
+          "SMOKE-1792610272890",
+          0,
+          5
+        ],
+        [
+          "SMOKE-1792610323131",
+          0,
+          5
+        ]
+      ],
+      "assert": true
+    },
+    {
+      "name": "order manager cannot adjust stock",
+      "method": "PATCH",
+      "path": "/api/inventory/10",
+      "status": 403,
+      "expected": [
+        403
+      ],
+      "pass": true,
+      "error": {
+        "code": "FORBIDDEN",
+        "message": "You do not have permission to perform this action"
+      }
+    },
+    {
+      "name": "customer cannot adjust stock",
+      "method": "PATCH",
+      "path": "/api/inventory/10",
+      "status": 403,
+      "expected": [
+        403
+      ],
+      "pass": true,
+      "error": {
+        "code": "FORBIDDEN",
+        "message": "You do not have permission to perform this action"
+      }
+    },
+    {
+      "name": "zero delta is rejected",
+      "method": "PATCH",
+      "path": "/api/inventory/10",
+      "status": 400,
+      "expected": [
+        400
+      ],
+      "pass": true,
+      "error": {
+        "code": "VALIDATION_ERROR",
+        "message": "Request payload validation failed"
+      }
+    },
+    {
+      "name": "missing reason is rejected",
+      "method": "PATCH",
+      "path": "/api/inventory/10",
+      "status": 400,
+      "expected": [
+        400
+      ],
+      "pass": true,
+      "error": {
+        "code": "VALIDATION_ERROR",
+        "message": "Request payload validation failed"
+      }
+    },
+    {
+      "name": "fractional quantity is rejected (integer units)",
+      "method": "PATCH",
+      "path": "/api/inventory/10",
+      "status": 400,
+      "expected": [
+        400
+      ],
+      "pass": true,
+      "error": {
+        "code": "VALIDATION_ERROR",
+        "message": "Request payload validation failed"
+      }
+    },
+    {
+      "name": "admin receives 60 units",
+      "method": "PATCH",
+      "path": "/api/inventory/10",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true
+    },
+    {
+      "name": "assert: receipt lands at 60 available",
+      "pass": true,
+      "detail": {
+        "quantity_delta": 60,
+        "movement_type": "stock_receipt",
+        "available_after": 60,
+        "reason": "Smoke stock receipt 1792610323131"
+      },
+      "assert": true
+    },
+    {
+      "name": "assert: receipt is typed as a stock_receipt",
+      "pass": true,
+      "detail": {
+        "quantity_delta": 60,
+        "movement_type": "stock_receipt",
+        "available_after": 60,
+        "reason": "Smoke stock receipt 1792610323131"
+      },
+      "assert": true
+    },
+    {
+      "name": "adjustment below zero is refused",
+      "method": "PATCH",
+      "path": "/api/inventory/10",
+      "status": 409,
+      "expected": [
+        409
+      ],
+      "pass": true,
+      "error": {
+        "code": "INSUFFICIENT_STOCK",
+        "message": "Adjustment would make stock negative (physical or available)"
+      }
+    },
+    {
+      "name": "assert: oversell returns INSUFFICIENT_STOCK",
+      "pass": true,
+      "detail": {
+        "code": "INSUFFICIENT_STOCK",
+        "message": "Adjustment would make stock negative (physical or available)"
+      },
+      "assert": true
+    },
+    {
+      "name": "stock is unchanged after the refused adjustment",
+      "method": "GET",
+      "path": "/api/inventory",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true,
+      "meta": {
+        "page": 1,
+        "limit": 20,
+        "total": 9
+      },
+      "count": 9
+    },
+    {
+      "name": "assert: refused adjustment left physical stock at 60",
+      "pass": true,
+      "detail": {
+        "product_id": "10",
+        "sku": "SMOKE-1792610323131",
+        "name": "Smoke Widget 1792610323131",
+        "is_active": false,
+        "physical_quantity": 60,
+        "reserved_quantity": 0,
+        "available_quantity": 60,
+        "low_stock_threshold": 10,
+        "is_low_stock": false
+      },
+      "assert": true
+    },
+    {
+      "name": "admin issues 15 units (manual adjustment)",
+      "method": "PATCH",
+      "path": "/api/inventory/10",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true
+    },
+    {
+      "name": "assert: issue lands at 45 available",
+      "pass": true,
+      "detail": {
+        "quantity_delta": -15,
+        "movement_type": "manual_adjustment",
+        "available_after": 45,
+        "reason": "Smoke issue to demo 1792610323131"
+      },
+      "assert": true
+    },
+    {
+      "name": "assert: issue is typed as manual_adjustment",
+      "pass": true,
+      "detail": {
+        "quantity_delta": -15,
+        "movement_type": "manual_adjustment",
+        "available_after": 45,
+        "reason": "Smoke issue to demo 1792610323131"
+      },
+      "assert": true
+    },
+    {
+      "name": "assert: each successful adjustment wrote exactly one ledger row (2 rows: +60, -15)",
+      "pass": true,
+      "detail": [
+        {
+          "quantity_delta": 60,
+          "movement_type": "stock_receipt",
+          "reason": "Smoke stock receipt 1792610323131"
+        },
+        {
+          "quantity_delta": -15,
+          "movement_type": "manual_adjustment",
+          "reason": "Smoke issue to demo 1792610323131"
+        }
+      ],
+      "assert": true
+    },
+    {
+      "name": "assert: create/update/deactivate/adjust are all audited with the actor role",
+      "pass": true,
+      "detail": [
+        [
+          "product",
+          "PRODUCT_CREATED",
+          "admin"
+        ],
+        [
+          "product",
+          "PRODUCT_UPDATED",
+          "admin"
+        ],
+        [
+          "product",
+          "PRODUCT_DEACTIVATED",
+          "admin"
+        ],
+        [
+          "inventory",
+          "STOCK_ADJUSTED",
+          "admin"
+        ],
+        [
+          "inventory",
+          "STOCK_ADJUSTED",
+          "admin"
+        ]
+      ],
+      "assert": true
+    },
+    {
+      "name": "assert: the refused oversell wrote no audit row (2 STOCK_ADJUSTED only)",
+      "pass": true,
+      "detail": [
+        "PRODUCT_CREATED",
+        "PRODUCT_UPDATED",
+        "PRODUCT_DEACTIVATED",
+        "STOCK_ADJUSTED",
+        "STOCK_ADJUSTED"
+      ],
+      "assert": true
+    },
+    {
+      "name": "assert: the audit detail carries delta + resulting availability (no secrets)",
+      "pass": true,
+      "detail": {
+        "delta": -15,
+        "reason": "Smoke issue to demo 1792610323131",
+        "movement_type": "manual_adjustment",
+        "available_after": 45
+      },
+      "assert": true
+    },
+    {
+      "name": "assert: the product row still exists (never hard-deleted)",
+      "pass": true,
+      "detail": [
+        {
+          "id": "10",
+          "is_active": false
+        }
+      ],
+      "assert": true
+    },
+    {
+      "name": "dev catalog intact after smoke",
+      "pass": true,
+      "assert": true,
+      "detail": {
+        "n": 9
+      }
+    }
+  ]
+}

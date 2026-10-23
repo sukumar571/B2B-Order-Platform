@@ -1,0 +1,206 @@
+{
+  "results": [
+    {
+      "step": "health",
+      "status": 200,
+      "body": {
+        "status": "ok",
+        "uptimeSeconds": 10,
+        "timestamp": "2026-10-21T18:04:44.555Z",
+        "db": {
+          "state": "up",
+          "latencyMs": 98
+        }
+      },
+      "setCookies": []
+    },
+    {
+      "step": "register customer (201)",
+      "status": 201,
+      "body": {
+        "message": "Account created",
+        "user": {
+          "id": "8",
+          "email": "smoke-1792605884290@b2boms.test",
+          "name": "Smoke Tester",
+          "role": "customer",
+          "createdAt": "2026-10-21T18:04:45.082Z"
+        },
+        "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4Iiwicm9sZSI6ImN1c3RvbWVyIiwidHlwIjoiYWNjZXNzIiwiaWF0IjoxNzkyNjA1ODg1LCJleHAiOjE3OTI2MDY3ODUsImF1ZCI6ImIyYi1vbXMtYXBpIiwiaXNzIjoiYjJiLW9tcyJ9.tB5iLEUxGsfKLccqsdQFXRgbtw8NmeJWUyg5fd_J3k4"
+      },
+      "setCookies": [
+        "refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4IiwianRpIjoiODdhY2M0NTE0M2VhYzUyZGQ1YmQ4N2Q3M2U5MzhkMzFjODNkYjE1YzY0MGE2NTBkOTIyMjgwZjM5NDZlOWY2NyIsImZhbSI6IjU2MmI1ZWI3LWIzZTMtNDgxZC1hNTNmLTU4MjJjYTk2Y2I4ZCIsInR5cCI6InJlZnJlc2giLCJpYXQiOjE3OTI2MDU4ODUsImV4cCI6MTc5MzIxMDY4NSwiYXVkIjoiYjJiLW9tcy1hcGkiLCJpc3MiOiJiMmItb21zIn0.YfoSnuEWHpVR0kWroAE3xH-3W9xYHJIirtZ6Lx-yFmI; Max-Age=604800; Path=/api/auth; Expires=Wed, 28 Oct 2026 18:04:45 GMT; HttpOnly; SameSite=Strict"
+      ]
+    },
+    {
+      "step": "register with ADMIN role (400)",
+      "status": 400,
+      "body": {
+        "error": {
+          "code": "VALIDATION_ERROR",
+          "message": "Request payload validation failed",
+          "details": {
+            "_": "Unrecognized key: \"role\""
+          }
+        }
+      },
+      "setCookies": []
+    },
+    {
+      "step": "register duplicate email (409)",
+      "status": 409,
+      "body": {
+        "error": {
+          "code": "EMAIL_TAKEN",
+          "message": "An account with this email already exists"
+        }
+      },
+      "setCookies": []
+    },
+    {
+      "step": "login (200 + HttpOnly cookie)",
+      "status": 200,
+      "body": {
+        "message": "Login successful",
+        "user": {
+          "id": "8",
+          "email": "smoke-1792605884290@b2boms.test",
+          "name": "Smoke Tester",
+          "role": "customer",
+          "createdAt": "2026-10-21T18:04:45.082Z"
+        },
+        "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4Iiwicm9sZSI6ImN1c3RvbWVyIiwidHlwIjoiYWNjZXNzIiwiaWF0IjoxNzkyNjA1ODg2LCJleHAiOjE3OTI2MDY3ODYsImF1ZCI6ImIyYi1vbXMtYXBpIiwiaXNzIjoiYjJiLW9tcyJ9.La5r2qQ3Ap1uaq60n8IxUJYKh68iqxJlh85XyBuc6zo"
+      },
+      "setCookies": [
+        "refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4IiwianRpIjoiMDU5OTcwZWNkYTYzZWMxNGVmNjg5M2QyOWIxYmI3MmFkODQ5YjUxOTMwNzFlZjFhNjAxZDQyNDk3ZTcyYjYwNSIsImZhbSI6ImUwYTcyZjMxLWU3OGQtNDc4NS1iMDdlLTQ3ZTI4YjY3NTFkZCIsInR5cCI6InJlZnJlc2giLCJpYXQiOjE3OTI2MDU4ODYsImV4cCI6MTc5MzIxMDY4NiwiYXVkIjoiYjJiLW9tcy1hcGkiLCJpc3MiOiJiMmItb21zIn0.RXyhNOByXU1WDO20q4VuR4GJhBt0JdjXWmyf_P--RLY; Max-Age=604800; Path=/api/auth; Expires=Wed, 28 Oct 2026 18:04:46 GMT; HttpOnly; SameSite=Strict"
+      ]
+    },
+    {
+      "step": "login wrong password (401)",
+      "status": 401,
+      "body": {
+        "error": {
+          "code": "INVALID_CREDENTIALS",
+          "message": "Invalid email or password"
+        }
+      },
+      "setCookies": []
+    },
+    {
+      "step": "me with access token (200)",
+      "status": 200,
+      "body": {
+        "user": {
+          "id": "8",
+          "email": "smoke-1792605884290@b2boms.test",
+          "name": "Smoke Tester",
+          "role": "customer",
+          "isActive": true
+        }
+      },
+      "setCookies": []
+    },
+    {
+      "step": "me without token (401)",
+      "status": 401,
+      "body": {
+        "error": {
+          "code": "UNAUTHENTICATED",
+          "message": "Authentication required"
+        }
+      },
+      "setCookies": []
+    },
+    {
+      "step": "me with malformed token (401)",
+      "status": 401,
+      "body": {
+        "error": {
+          "code": "UNAUTHENTICATED",
+          "message": "Authentication required"
+        }
+      },
+      "setCookies": []
+    },
+    {
+      "step": "refresh rotates cookie (200)",
+      "status": 200,
+      "body": {
+        "message": "Token refreshed",
+        "user": {
+          "id": "8",
+          "email": "smoke-1792605884290@b2boms.test",
+          "name": "Smoke Tester",
+          "role": "customer",
+          "createdAt": "2026-10-21T18:04:45.082Z"
+        },
+        "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4Iiwicm9sZSI6ImN1c3RvbWVyIiwidHlwIjoiYWNjZXNzIiwiaWF0IjoxNzkyNjA1ODg2LCJleHAiOjE3OTI2MDY3ODYsImF1ZCI6ImIyYi1vbXMtYXBpIiwiaXNzIjoiYjJiLW9tcyJ9.La5r2qQ3Ap1uaq60n8IxUJYKh68iqxJlh85XyBuc6zo"
+      },
+      "setCookies": [
+        "refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI4IiwianRpIjoiZDg5NjdlYzVjNGRlZTllYWVlN2FiMmQyZWZmZWRhODg4OTEwZmNiZjJhMGYwZDk1YjRmYTQyOTlmMWIyYWU0MCIsImZhbSI6ImUwYTcyZjMxLWU3OGQtNDc4NS1iMDdlLTQ3ZTI4YjY3NTFkZCIsInR5cCI6InJlZnJlc2giLCJpYXQiOjE3OTI2MDU4ODYsImV4cCI6MTc5MzIxMDY4NiwiYXVkIjoiYjJiLW9tcy1hcGkiLCJpc3MiOiJiMmItb21zIn0.aLmvlzWX9tICUAQ01t2jiv3bEbxJJvbqVArr0Ha52RI; Max-Age=604800; Path=/api/auth; Expires=Wed, 28 Oct 2026 18:04:46 GMT; HttpOnly; SameSite=Strict"
+      ]
+    },
+    {
+      "step": "reuse spent cookie -> TOKEN_REUSED (401)",
+      "status": 401,
+      "body": {
+        "error": {
+          "code": "TOKEN_REUSED",
+          "message": "Refresh token reuse detected — session revoked"
+        }
+      },
+      "setCookies": []
+    },
+    {
+      "step": "successor dead after family revoke (401)",
+      "status": 401,
+      "body": {
+        "error": {
+          "code": "TOKEN_REUSED",
+          "message": "Refresh token reuse detected — session revoked"
+        }
+      },
+      "setCookies": []
+    },
+    {
+      "step": "logout (200)",
+      "status": 200,
+      "body": {
+        "message": "Logged out"
+      },
+      "setCookies": [
+        "refresh_token=; Path=/api/auth; Expires=Thu, 01 Jan 1970 00:00:00 GMT; HttpOnly; SameSite=Strict"
+      ]
+    },
+    {
+      "step": "refresh after logout (401)",
+      "status": 401,
+      "body": {
+        "error": {
+          "code": "INVALID_REFRESH_TOKEN",
+          "message": "Refresh token is missing"
+        }
+      },
+      "setCookies": []
+    },
+    {
+      "step": "seeded admin login still works (200)",
+      "status": 200,
+      "body": {
+        "message": "Login successful",
+        "user": {
+          "id": "1",
+          "email": "admin@b2boms.test",
+          "name": "Asha Admin",
+          "role": "admin",
+          "createdAt": "2026-10-21T17:22:23.468Z"
+        },
+        "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwicm9sZSI6ImFkbWluIiwidHlwIjoiYWNjZXNzIiwiaWF0IjoxNzkyNjA1ODg3LCJleHAiOjE3OTI2MDY3ODcsImF1ZCI6ImIyYi1vbXMtYXBpIiwiaXNzIjoiYjJiLW9tcyJ9.v4KgDvOkt9bwLwmv3Du3OdjBdwevcOIB2j_yYbtAlyE"
+      },
+      "setCookies": [
+        "refresh_token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIiwianRpIjoiYmY4OWMxZGEwMmZjYjY3MGM2ODg5MjczMDVhYmIxYWZhNjk5ZGQyY2M4YzU1ZWYwODUwNjdlYjEzNGFhZDFiMyIsImZhbSI6ImJlNTEyNTFkLTkzOWUtNDNkNy1hNzEwLTNiZTMxMjJiMWU4NyIsInR5cCI6InJlZnJlc2giLCJpYXQiOjE3OTI2MDU4ODcsImV4cCI6MTc5MzIxMDY4NywiYXVkIjoiYjJiLW9tcy1hcGkiLCJpc3MiOiJiMmItb21zIn0.dIPHrtkXdV5jN6Ke4LHvdann1xd16sERaBaMD23dUKE; Max-Age=604800; Path=/api/auth; Expires=Wed, 28 Oct 2026 18:04:47 GMT; HttpOnly; SameSite=Strict"
+      ]
+    }
+  ],
+  "note": "accessToken values elided"
+}

@@ -1,0 +1,70 @@
+﻿# docker compose configuration validation (Phase 13)
+# local 2026-10-23 19:29:32 +05:30 | utc 2026-10-23T13:59:32Z
+# Docker version 29.9.1, build dfc520d | Docker Compose version v5.6.0 | node v24.17.0
+--- (1) no secrets supplied (--env-file .env.empty) -> MUST fail fast ---
+docker.exe : error while interpolating 
+services.backend.environment.DATABASE_URL: required variable POSTGRES_PASSWORD 
+is missing a value: POSTGRES_PASSWORD must be set in the root .env - see 
+.env.example
+At E:\Users\sudhe\B2B Order Management Platform\.p13-static.ps1:12 char:2
++ (& docker @base '--env-file' '.env.empty' 'config' '--quiet' 2>&1) |  ...
++  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (error while int...ee .env.example 
+   :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+error while interpolating services.backend.environment.JWT_ACCESS_SECRET: 
+required variable JWT_ACCESS_SECRET is missing a value: JWT_ACCESS_SECRET must 
+be set in the root .env - see .env.example
+error while interpolating services.backend.environment.JWT_REFRESH_SECRET: 
+required variable JWT_REFRESH_SECRET is missing a value: JWT_REFRESH_SECRET 
+must be set in the root .env - see .env.example
+error while interpolating services.db.environment.POSTGRES_PASSWORD: required 
+variable POSTGRES_PASSWORD is missing a value: POSTGRES_PASSWORD must be set 
+in the root .env - see .env.example
+error while interpolating services.migrate.environment.DATABASE_URL: required 
+variable POSTGRES_PASSWORD is missing a value: POSTGRES_PASSWORD must be set 
+in the root .env - see .env.example
+error while interpolating services.migrate.environment.JWT_ACCESS_SECRET: 
+required variable JWT_ACCESS_SECRET is missing a value: JWT_ACCESS_SECRET must 
+be set in the root .env - see .env.example
+error while interpolating services.migrate.environment.JWT_REFRESH_SECRET: 
+required variable JWT_REFRESH_SECRET is missing a value: JWT_REFRESH_SECRET 
+must be set in the root .env - see .env.example
+error while interpolating services.seed.environment.DATABASE_URL: required 
+variable POSTGRES_PASSWORD is missing a value: POSTGRES_PASSWORD must be set 
+in the root .env - see .env.example
+error while interpolating services.seed.environment.JWT_ACCESS_SECRET: 
+required variable JWT_ACCESS_SECRET is missing a value: JWT_ACCESS_SECRET must 
+be set in the root .env - see .env.example
+error while interpolating services.seed.environment.JWT_REFRESH_SECRET: 
+required variable JWT_REFRESH_SECRET is missing a value: JWT_REFRESH_SECRET 
+must be set in the root .env - see .env.example
+error while interpolating x-api-env.DATABASE_URL: required variable 
+POSTGRES_PASSWORD is missing a value: POSTGRES_PASSWORD must be set in the 
+root .env - see .env.example
+error while interpolating x-api-env.JWT_ACCESS_SECRET: required variable 
+JWT_ACCESS_SECRET is missing a value: JWT_ACCESS_SECRET must be set in the 
+root .env - see .env.example
+error while interpolating x-api-env.JWT_REFRESH_SECRET: required variable 
+JWT_REFRESH_SECRET is missing a value: JWT_REFRESH_SECRET must be set in the 
+root .env - see .env.example
+error while interpolating x-database-url: required variable POSTGRES_PASSWORD 
+is missing a value: POSTGRES_PASSWORD must be set in the root .env - see 
+.env.example
+exit code: 1
+
+--- (2) base file with secrets supplied -> exit 0 ---
+exit code: 0
+
+--- (3) base + docker-compose.dev.yml -> exit 0 ---
+exit code: 0
+
+--- (4) resolved: published ports per service (BASE file = prod shape) ---
+backend: image=b2b-oms-api:local ports=[] depends_on={"db":{"condition":"service_healthy","required":true},"migrate":{"condition":"service_completed_successfully","required":true}} restart=unless-stopped
+db: image=postgres:16-alpine ports=[] depends_on={} restart=unless-stopped
+frontend: image=b2b-oms-web:local ports=["8099:80"] depends_on={"backend":{"condition":"service_healthy","required":true}} restart=unless-stopped
+migrate: image=b2b-oms-api:local ports=[] depends_on={"db":{"condition":"service_healthy","required":true}} restart=no
+volumes: ["pgdata"]
+healthchecks: backend,db
+exit code: 0

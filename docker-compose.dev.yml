@@ -1,0 +1,22 @@
+# ---------------------------------------------------------------------------
+# LOCAL DEVELOPMENT override — layered on top of docker-compose.yml:
+#
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+#   (npm shorthand: `npm run db:up` for the database only, `docker:up:dev`
+#    for the whole stack)
+#
+# It publishes the ports host-side tooling needs — the Vite dev server proxies
+# to http://localhost:4000 and the backend/tests/scripts connect to the
+# database on 5433 (a native PostgreSQL often occupies 5432 on Windows).
+# Containers keep using the service names (`db:5432`, `backend:4000`); only the
+# host mapping is added here. NEVER use this file in production.
+# ---------------------------------------------------------------------------
+
+services:
+  db:
+    ports:
+      - '${POSTGRES_HOST_PORT:-5433}:5432'
+
+  backend:
+    ports:
+      - '${API_HOST_PORT:-4000}:4000'

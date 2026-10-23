@@ -1,0 +1,44 @@
+﻿# production fail-closed secret enforcement (Phase 13)
+# local 2026-10-23 19:30:48 +05:30 | NODE_ENV=production is set in the compose api-env anchor
+--- baseline: valid secrets supplied -> boots (config loads) ---
+docker.exe :  Network b2b_p13_final_default Creating 
+At E:\Users\sudhe\B2B Order Management Platform\.p13-failclosed.ps1:12 char:2
++ (& docker compose -p b2b_p13_final --env-file .env.p13-clean run --rm ...
++  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ( Network b2b_p13_final_default Cr 
+   eating :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+ Network b2b_p13_final_default Creating 
+ Network b2b_p13_final_default Created 
+ Network b2b_p13_final_default Created 
+ Container b2b_p13_final-backend-run-161dcb8516a6 Creating 
+ Container b2b_p13_final-backend-run-161dcb8516a6 Created 
+BOOTED - UNEXPECTED (BAD)
+exit code: 0
+
+--- override a weak JWT_ACCESS_SECRET -> must REFUSE to boot ---
+docker.exe :  Container b2b_p13_final-backend-run-0375c8dcacf5 Creating 
+At E:\Users\sudhe\B2B Order Management Platform\.p13-failclosed.ps1:17 char:2
++ (& docker compose -p b2b_p13_final --env-file .env.p13-clean run --rm ...
++  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ( Container b2b_...cacf5 Creating  
+   :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+ Container b2b_p13_final-backend-run-0375c8dcacf5 Created 
+REFUSED: JWT_ACCESS_SECRET is too weak for production (>= 32 chars, not the dev default)
+exit code: 0
+
+--- override COOKIE_SECURE=false -> must REFUSE to boot ---
+docker.exe :  Container b2b_p13_final-backend-run-8fb1c0c57a0b Creating 
+At E:\Users\sudhe\B2B Order Management Platform\.p13-failclosed.ps1:22 char:2
++ (& docker compose -p b2b_p13_final --env-file .env.p13-clean run --rm ...
++  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ( Container b2b_...57a0b Creating  
+   :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+ Container b2b_p13_final-backend-run-8fb1c0c57a0b Created 
+REFUSED: COOKIE_SECURE must be true in production (HTTPS-only auth cookies)
+exit code: 0

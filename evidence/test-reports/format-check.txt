@@ -1,0 +1,6 @@
+﻿
+> b2b-order-management-platform@0.1.0 format:check
+> prettier --check "**/*.{js,jsx,json,md,css,html}"
+
+Checking formatting...
+All matched files use Prettier code style!

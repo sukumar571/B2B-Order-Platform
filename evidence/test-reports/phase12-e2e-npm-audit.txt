@@ -1,0 +1,4 @@
+--- e2e workspace: npm audit (full) ---
+found 0 vulnerabilities
+--- production surface only (npm audit --omit=dev) ---
+found 0 vulnerabilities

@@ -1,0 +1,20 @@
+# Build context = ./frontend. Keep the build fast and the bundle secret-free.
+node_modules
+dist
+coverage
+npm-debug.log*
+*.log
+
+# NEVER let environment files reach the image — `vite build` reads any .env*
+# present in the project dir, which would bake dev-only values into the
+# public JS bundle (requirements.md C-06).
+.env
+.env.*
+!.env.example
+
+.eslintcache
+Dockerfile
+.dockerignore
+docker-compose*.yml
+.vscode
+.idea

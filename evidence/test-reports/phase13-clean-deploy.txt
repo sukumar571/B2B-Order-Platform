@@ -1,0 +1,318 @@
+﻿# clean deployment from an empty database volume (compose project b2b_p13_final)
+# local 2026-10-23 19:24:35 +05:30 | utc 2026-10-23T13:54:35Z
+# Docker version 29.9.1, build dfc520d | Docker Compose version v5.6.0 | node v24.17.0
+
+=== docker compose -p b2b_p13_final --env-file .env.p13-clean up -d --build ===
+PS> docker compose -p b2b_p13_final --env-file .env.p13-clean up -d --build
+ Image b2b-oms-api:local Building 
+ Image b2b-oms-web:local Building 
+ Image b2b-oms-api:local Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 1.56kB done
+#1 DONE 0.0s
+
+#2 [migrate internal] load build definition from Dockerfile
+#2 transferring dockerfile: 1.76kB 0.1s done
+#2 DONE 0.1s
+
+#3 [frontend internal] load build definition from Dockerfile
+#3 transferring dockerfile: 1.44kB 0.0s done
+#3 DONE 0.1s
+
+#4 [frontend internal] load metadata for docker.io/library/node:20-alpine
+#4 ...
+
+#5 [frontend internal] load metadata for docker.io/library/nginx:1.27-alpine
+#5 DONE 0.9s
+
+#4 [frontend internal] load metadata for docker.io/library/node:20-alpine
+#4 DONE 2.3s
+
+#6 [frontend internal] load .dockerignore
+#6 transferring context: 482B 0.0s done
+#6 DONE 0.0s
+
+#7 [migrate internal] load .dockerignore
+#7 transferring context: 465B 0.0s done
+#7 DONE 0.0s
+
+#8 [frontend internal] load build context
+#8 DONE 0.0s
+
+#9 [migrate internal] load build context
+#9 transferring context: 5.25kB 0.0s done
+#9 transferring context: 5.25kB 0.0s done
+#9 DONE 0.0s
+
+#10 [frontend serve 1/3] FROM docker.io/library/nginx:1.27-alpine@sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10
+#10 resolve docker.io/library/nginx:1.27-alpine@sha256:65645c7bb6a0661892a8b03b89d0743208a18dd2f3f17a54ef4b76fb8e2f2a10 0.1s done
+#10 DONE 0.1s
+
+#11 [frontend build 1/7] FROM docker.io/library/node:20-alpine@sha256:fb4cd12c85ee03686f6af5362a0b0d56d50c58a04632e6c0fb8363f609372293
+#11 resolve docker.io/library/node:20-alpine@sha256:fb4cd12c85ee03686f6af5362a0b0d56d50c58a04632e6c0fb8363f609372293 0.1s done
+#11 DONE 0.1s
+
+#12 [migrate stage-1 3/7] COPY --from=deps /app/node_modules ./node_modules
+#12 CACHED
+
+#13 [migrate stage-1 5/7] COPY src ./src
+#13 CACHED
+
+#14 [migrate deps 3/4] COPY package.json package-lock.json ./
+#14 CACHED
+
+#15 [migrate stage-1 6/7] COPY scripts ./scripts
+#15 CACHED
+
+#16 [migrate deps 4/4] RUN npm ci --omit=dev --no-audit --no-fund
+#16 CACHED
+
+#17 [migrate stage-1 4/7] COPY package.json ./
+#17 CACHED
+
+#18 [migrate stage-1 7/7] COPY migrations ./migrations
+#18 CACHED
+
+#8 [frontend internal] load build context
+#8 transferring context: 2.69kB 0.0s done
+#8 DONE 0.0s
+
+#19 [frontend build 4/7] RUN npm ci --no-audit --no-fund
+#19 CACHED
+
+#20 [frontend serve 2/3] COPY nginx.conf /etc/nginx/conf.d/default.conf
+#20 CACHED
+
+#21 [frontend build 6/7] COPY src ./src
+#21 CACHED
+
+#22 [frontend build 7/7] RUN npm run build
+#22 CACHED
+
+#23 [frontend build 2/7] WORKDIR /app
+#23 CACHED
+
+#24 [frontend build 3/7] COPY package.json package-lock.json ./
+#24 CACHED
+
+#25 [frontend build 5/7] COPY index.html vite.config.js ./
+#25 CACHED
+
+#26 [frontend serve 3/3] COPY --from=build /app/dist /usr/share/nginx/html
+#26 CACHED
+
+#27 [frontend] exporting to image
+#27 exporting layers
+#27 exporting layers done
+#27 exporting manifest sha256:b1261e20f107ed2a4d2a1d21c6c6eabefbe701edb79b6ee0cd7d444b615c7cd8 0.0s done
+#27 exporting config sha256:c1ade85971c74f98397e41b0226ae00ba98109ef37bda3265e3435f15cb36569 0.0s done
+#27 exporting attestation manifest sha256:6d904b70e53176bbbcca8fe5dbb9a62cf7a2dffe108cab18b07731cc864baff0 0.1s done
+#27 exporting manifest list sha256:c36863ddf153746581ac54f487a7d9ab3ea74ba352fb7a14aa72d1b9c0625d00
+#27 ...
+
+#28 [migrate] exporting to image
+#28 exporting layers done
+#28 exporting manifest sha256:95460b8154cd148273b78989f8dde73f7c74d7d917a3368bc738f244e3d6c54f 0.0s done
+#28 exporting config sha256:4c05fbf8e6ed777f3b3fd257c7ceeef51e820076077ed370e09c4a48d1ccf1b1 0.0s done
+#28 exporting attestation manifest sha256:a66cda213bae13d308496418351d76615e7820abfffcd92e9e5376a518f684f5 0.1s done
+#28 exporting manifest list sha256:de9dc2791b939d6e58808f21eb55d9ee389df724e634c39873bd3206fc914127 0.0s done
+#28 naming to docker.io/library/b2b-oms-api:local 0.0s done
+#28 unpacking to docker.io/library/b2b-oms-api:local 0.0s done
+#28 DONE 0.3s
+
+#29 [backend] exporting to image
+#29 exporting layers 0.0s done
+#29 exporting manifest sha256:51ebb33a05f1deb973be0eadc6709d1c5b788101a044532b5bb97af86793a1f5 0.0s done
+#29 exporting config sha256:3275ae179fb010255a7d2be113aa76d0d61623c687fa9e140200b34840006a71 0.0s done
+#29 exporting attestation manifest sha256:0fc11a0be66ad50694d083a6008dd74f74f9a4641c894beb84ff8de4134656fa 0.1s done
+#29 exporting manifest list sha256:0081561389c0a6f43271022f9933734b19b2e8ef11d75f1ee21c7f1c70146957 0.0s done
+#29 naming to docker.io/library/b2b-oms-api:local 0.0s done
+#29 unpacking to docker.io/library/b2b-oms-api:local 0.0s done
+#29 DONE 0.4s
+
+#27 [frontend] exporting to image
+#27 exporting manifest list sha256:c36863ddf153746581ac54f487a7d9ab3ea74ba352fb7a14aa72d1b9c0625d00 0.0s done
+#27 naming to docker.io/library/b2b-oms-web:local done
+#27 unpacking to docker.io/library/b2b-oms-web:local 0.0s done
+#27 DONE 0.3s
+
+#30 [migrate] resolving provenance for metadata file
+#30 DONE 0.1s
+
+#31 [frontend] resolving provenance for metadata file
+#31 DONE 0.1s
+
+#32 [backend] resolving provenance for metadata file
+#32 DONE 0.0s
+ Image b2b-oms-api:local Built 
+ Image b2b-oms-api:local Built 
+ Image b2b-oms-web:local Built 
+ Volume b2b_p13_final_pgdata Creating 
+ Network b2b_p13_final_default Creating 
+ Volume b2b_p13_final_pgdata Creating 
+ Network b2b_p13_final_default Creating 
+ Volume b2b_p13_final_pgdata Created 
+ Volume b2b_p13_final_pgdata Created 
+ Network b2b_p13_final_default Created 
+ Network b2b_p13_final_default Created 
+ Container b2b_p13_final-db-1 Creating 
+ Container b2b_p13_final-db-1 Created 
+ Container b2b_p13_final-migrate-1 Creating 
+ Container b2b_p13_final-migrate-1 Created 
+ Container b2b_p13_final-backend-1 Creating 
+ Container b2b_p13_final-backend-1 Created 
+ Container b2b_p13_final-frontend-1 Creating 
+ Container b2b_p13_final-frontend-1 Created 
+ Container b2b_p13_final-db-1 Starting 
+ Container b2b_p13_final-db-1 Started 
+ Container b2b_p13_final-db-1 Waiting 
+ Container b2b_p13_final-db-1 Healthy 
+ Container b2b_p13_final-migrate-1 Starting 
+ Container b2b_p13_final-migrate-1 Started 
+ Container b2b_p13_final-migrate-1 Waiting 
+ Container b2b_p13_final-db-1 Waiting 
+ Container b2b_p13_final-db-1 Healthy 
+ Container b2b_p13_final-migrate-1 Exited 
+ Container b2b_p13_final-backend-1 Starting 
+ Container b2b_p13_final-backend-1 Started 
+ Container b2b_p13_final-backend-1 Waiting 
+ Container b2b_p13_final-backend-1 Healthy 
+ Container b2b_p13_final-frontend-1 Starting 
+ Container b2b_p13_final-frontend-1 Started 
+exit code: 0
+
+=== docker compose -p b2b_p13_final --env-file .env.p13-clean ps -a ===
+PS> docker compose -p b2b_p13_final --env-file .env.p13-clean ps -a
+NAME                       IMAGE                COMMAND                  SERVICE    CREATED          STATUS                                     PORTS
+b2b_p13_final-backend-1    b2b-oms-api:local    "docker-entrypoint.sΓÇª"   backend    14 seconds ago   Up 6 seconds (healthy)                     4000/tcp
+b2b_p13_final-db-1         postgres:16-alpine   "docker-entrypoint.sΓÇª"   db         15 seconds ago   Up 13 seconds (healthy)                    5432/tcp
+b2b_p13_final-frontend-1   b2b-oms-web:local    "/docker-entrypoint.ΓÇª"   frontend   14 seconds ago   Up Less than a second (health: starting)   0.0.0.0:8099->80/tcp, [::]:8099->80/tcp
+b2b_p13_final-migrate-1    b2b-oms-api:local    "docker-entrypoint.sΓÇª"   migrate    15 seconds ago   Exited (0) 6 seconds ago                   
+exit code: 0
+
+=== docker compose -p b2b_p13_final --env-file .env.p13-clean run --rm migrate  (idempotent controlled step) ===
+PS> docker compose -p b2b_p13_final --env-file .env.p13-clean run --rm migrate  (idempotent controlled step)
+ Container b2b_p13_final-db-1 Running 
+ Container b2b_p13_final-db-1 Waiting 
+ Container b2b_p13_final-db-1 Healthy 
+ Container b2b_p13_final-migrate-run-aabe70716955 Creating 
+ Container b2b_p13_final-migrate-run-aabe70716955 Created 
+No migrations to run!
+Migrations up completed against postgres://***@db:5432/b2b_oms.
+exit code: 0
+
+=== docker compose -p b2b_p13_final --env-file .env.p13-clean --profile tools run --rm seed ===
+PS> docker compose -p b2b_p13_final --env-file .env.p13-clean --profile tools run --rm seed
+ Container b2b_p13_final-db-1 Running 
+ Container b2b_p13_final-db-1 Waiting 
+ Container b2b_p13_final-db-1 Healthy 
+ Container b2b_p13_final-migrate-1 Starting 
+ Container b2b_p13_final-migrate-1 Started 
+ Container b2b_p13_final-db-1 Waiting 
+ Container b2b_p13_final-migrate-1 Waiting 
+ Container b2b_p13_final-migrate-1 Exited 
+ Container b2b_p13_final-db-1 Healthy 
+ Container b2b_p13_final-seed-run-3f0fa0fef303 Creating 
+ Container b2b_p13_final-seed-run-3f0fa0fef303 Created 
+Seeded 4 users (dev password: "Passw0rd!") and 6 products with inventory.
+exit code: 0
+
+=== docker compose -p b2b_p13_final --env-file .env.p13-clean --profile tools run --rm seed  (second run must skip) ===
+PS> docker compose -p b2b_p13_final --env-file .env.p13-clean --profile tools run --rm seed  (second run must skip)
+ Container b2b_p13_final-db-1 Running 
+ Container b2b_p13_final-db-1 Waiting 
+ Container b2b_p13_final-db-1 Healthy 
+ Container b2b_p13_final-migrate-1 Starting 
+ Container b2b_p13_final-migrate-1 Started 
+ Container b2b_p13_final-migrate-1 Waiting 
+ Container b2b_p13_final-db-1 Waiting 
+ Container b2b_p13_final-db-1 Healthy 
+ Container b2b_p13_final-migrate-1 Exited 
+ Container b2b_p13_final-seed-run-1c03ac747cc6 Creating 
+ Container b2b_p13_final-seed-run-1c03ac747cc6 Created 
+Existing data found ΓÇö seed skipped (nothing was changed).
+exit code: 0
+
+=== docker compose -p b2b_p13_final --env-file .env.p13-clean up -d --scale backend=3 ===
+PS> docker compose -p b2b_p13_final --env-file .env.p13-clean up -d --scale backend=3
+ Container b2b_p13_final-backend-1 Running 
+ Container b2b_p13_final-frontend-1 Running 
+ Container b2b_p13_final-db-1 Running 
+ Container b2b_p13_final-backend-3 Creating 
+ Container b2b_p13_final-backend-2 Creating 
+ Container b2b_p13_final-backend-2 Created 
+ Container b2b_p13_final-backend-3 Created 
+ Container b2b_p13_final-db-1 Waiting 
+ Container b2b_p13_final-db-1 Healthy 
+ Container b2b_p13_final-migrate-1 Starting 
+ Container b2b_p13_final-migrate-1 Started 
+ Container b2b_p13_final-db-1 Waiting 
+ Container b2b_p13_final-migrate-1 Waiting 
+ Container b2b_p13_final-db-1 Healthy 
+ Container b2b_p13_final-migrate-1 Exited 
+ Container b2b_p13_final-backend-3 Starting 
+ Container b2b_p13_final-backend-3 Started 
+ Container b2b_p13_final-backend-2 Starting 
+ Container b2b_p13_final-backend-2 Started 
+ Container b2b_p13_final-backend-3 Waiting 
+ Container b2b_p13_final-backend-2 Waiting 
+ Container b2b_p13_final-backend-1 Waiting 
+ Container b2b_p13_final-backend-3 Healthy 
+ Container b2b_p13_final-backend-2 Healthy 
+ Container b2b_p13_final-backend-1 Healthy 
+exit code: 0
+
+=== docker compose -p b2b_p13_final --env-file .env.p13-clean ps -a  (exactly one migrate container for three API replicas) ===
+PS> docker compose -p b2b_p13_final --env-file .env.p13-clean ps -a  (exactly one migrate container for three API replicas)
+NAME                       IMAGE                COMMAND                  SERVICE    CREATED          STATUS                     PORTS
+b2b_p13_final-backend-1    b2b-oms-api:local    "docker-entrypoint.sΓÇª"   backend    33 seconds ago   Up 25 seconds (healthy)    4000/tcp
+b2b_p13_final-backend-2    b2b-oms-api:local    "docker-entrypoint.sΓÇª"   backend    8 seconds ago    Up 6 seconds (healthy)     4000/tcp
+b2b_p13_final-backend-3    b2b-oms-api:local    "docker-entrypoint.sΓÇª"   backend    8 seconds ago    Up 6 seconds (healthy)     4000/tcp
+b2b_p13_final-db-1         postgres:16-alpine   "docker-entrypoint.sΓÇª"   db         34 seconds ago   Up 32 seconds (healthy)    5432/tcp
+b2b_p13_final-frontend-1   b2b-oms-web:local    "/docker-entrypoint.ΓÇª"   frontend   33 seconds ago   Up 19 seconds (healthy)    0.0.0.0:8099->80/tcp, [::]:8099->80/tcp
+b2b_p13_final-migrate-1    b2b-oms-api:local    "docker-entrypoint.sΓÇª"   migrate    34 seconds ago   Exited (0) 6 seconds ago   
+exit code: 0
+
+=== node scripts/deploy-smoke.js http://localhost:8099 ===
+PS> node scripts/deploy-smoke.js http://localhost:8099
+Deployment smoke against http://localhost:8099
+
+PASS  SPA / ΓÇö HTTP 200, text/html
+PASS  SPA /products ΓÇö HTTP 200, text/html
+PASS  SPA /login ΓÇö HTTP 200, text/html
+PASS  GET /api/health via proxy ΓÇö {"status":"ok","uptimeSeconds":26,"timestamp":"2026-10-23T13:55:15.905Z","db":{"state":"up","latencyMs":1}}
+PASS  GET /api/products (db-backed) ΓÇö total=5
+PASS  GET /api/cart anonymous ΓåÆ 401 ΓÇö HTTP 401 {"error":{"code":"UNAUTHENTICATED","message":"Authentication required"}}
+PASS  POST /api/auth/login (admin) ΓÇö HTTP 200
+PASS  refresh cookie is HttpOnly + SameSite=Strict + Secure ΓÇö refresh_token=***; Max-Age=604800; Path=/api/auth; Expires=Fri, 30 Oct 2026 13:55:16 GMT; HttpOnly; Secure; SameSite=Strict
+PASS  GET /api/reports/dashboard (admin role) ΓÇö HTTP 200
+
+9/9 checks passed.
+exit code: 0
+
+=== docker compose -p b2b_p13_final --env-file .env.p13-clean up -d --scale backend=1 ===
+PS> docker compose -p b2b_p13_final --env-file .env.p13-clean up -d --scale backend=1
+ Container b2b_p13_final-backend-1 Running 
+ Container b2b_p13_final-frontend-1 Running 
+ Container b2b_p13_final-db-1 Running 
+ Container b2b_p13_final-backend-2 Stopping 
+ Container b2b_p13_final-backend-3 Stopping 
+ Container b2b_p13_final-backend-2 Stopped 
+ Container b2b_p13_final-backend-2 Removing 
+ Container b2b_p13_final-backend-3 Stopped 
+ Container b2b_p13_final-backend-3 Removing 
+ Container b2b_p13_final-backend-2 Removed 
+ Container b2b_p13_final-backend-3 Removed 
+ Container b2b_p13_final-db-1 Waiting 
+ Container b2b_p13_final-db-1 Healthy 
+ Container b2b_p13_final-migrate-1 Starting 
+ Container b2b_p13_final-migrate-1 Started 
+ Container b2b_p13_final-db-1 Waiting 
+ Container b2b_p13_final-migrate-1 Waiting 
+ Container b2b_p13_final-migrate-1 Exited 
+ Container b2b_p13_final-db-1 Healthy 
+ Container b2b_p13_final-backend-1 Waiting 
+ Container b2b_p13_final-backend-1 Healthy 
+exit code: 0
+
+NOTE: production fail-closed secret enforcement (weak JWT / COOKIE_SECURE=false both REFUSED) is captured in phase13-failclosed.txt. The two blocks previously appended here were corrupted by PowerShell argument quote-stripping (SyntaxError, not the real path) and have been removed.

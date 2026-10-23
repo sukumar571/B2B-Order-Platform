@@ -1,0 +1,4 @@
+﻿
+> b2b-oms-frontend@0.1.0 lint
+> eslint .
+

@@ -1,0 +1,85 @@
+FRONTEND COVERAGE RUN START: 2026-10-23 18:34:04 +05:30
+
+[1m[46m RUN [49m[22m [36mv3.2.7 [39m[90mE:/Users/sudhe/B2B Order Management Platform/frontend[39m
+      [2mCoverage enabled with [22m[33mv8[39m
+
+ [32m  [39m src/test/orders.test.jsx [2m([22m[2m14 tests[22m[2m)[22m[33m 2274[2mms[22m[39m
+   [33m[2m  [22m[39m OrderHistoryPage[2m > [22mrenders the customer  s own orders with server totals and status [33m 366[2mms[22m[39m
+   [33m[2m  [22m[39m OrderDetailPage[2m > [22mcancels with a reason via POST /:id/cancel and re-renders the state [33m 1019[2mms[22m[39m
+ [32m  [39m src/test/catalog.test.jsx [2m([22m[2m16 tests[22m[2m)[22m[33m 3650[2mms[22m[39m
+   [33m[2m  [22m[39m ProductsPage    live data, states and pagination[2m > [22mderives the page count from total/limit and pages forward through the API [33m 511[2mms[22m[39m
+   [33m[2m  [22m[39m ProductsPage    live data, states and pagination[2m > [22msends the search term to the backend (server-side search) [33m 542[2mms[22m[39m
+   [33m[2m  [22m[39m AdminProductsPage (ADMIN only)[2m > [22msurfaces backend validation details from the add-product form [33m 662[2mms[22m[39m
+   [33m[2m  [22m[39m InventoryPage (ADMIN / ORDER_MANAGER)[2m > [22madmin adjustment PATCHes /api/inventory/:id and shows the audited result [33m 558[2mms[22m[39m
+   [33m[2m  [22m[39m InventoryPage (ADMIN / ORDER_MANAGER)[2m > [22mshows the INSUFFICIENT_STOCK error the backend returns for an over-drawdown [33m 518[2mms[22m[39m
+ [32m  [39m src/test/auth.test.jsx [2m([22m[2m11 tests[22m[2m)[22m[33m 5544[2mms[22m[39m
+   [33m[2m  [22m[39m RegisterPage    customer sign-up[2m > [22mposts only name/email/password (no role) and lands the customer in the app [33m 1880[2mms[22m[39m
+   [33m[2m  [22m[39m RegisterPage    customer sign-up[2m > [22mblocks submission client-side when the password is too weak (no request sent) [33m 1026[2mms[22m[39m
+   [33m[2m  [22m[39m RegisterPage    customer sign-up[2m > [22msurfaces the server rejection and stays on the form [33m 1213[2mms[22m[39m
+   [33m[2m  [22m[39m RegisterPage    customer sign-up[2m > [22mguards against accidental duplicate submissions [33m 1218[2mms[22m[39m
+ [32m  [39m src/test/invoice.test.jsx [2m([22m[2m10 tests[22m[2m)[22m[33m 1168[2mms[22m[39m
+   [33m[2m  [22m[39m InvoicePage (printable document)[2m > [22moffers staff a void action that posts only a reason and flips status [33m 572[2mms[22m[39m
+ [32m  [39m src/test/cart.test.jsx [2m([22m[2m11 tests[22m[2m)[22m[33m 1267[2mms[22m[39m
+   [33m[2m  [22m[39m CartPage[2m > [22mincrements quantity via PATCH with an absolute value and re-renders [33m 314[2mms[22m[39m
+ [32m  [39m src/test/App.test.jsx [2m([22m[2m2 tests[22m[2m)[22m[33m 368[2mms[22m[39m
+ [32m  [39m src/test/dashboard.test.jsx [2m([22m[2m7 tests[22m[2m)[22m[33m 797[2mms[22m[39m
+   [33m[2m  [22m[39m DashboardPage    admin view[2m > [22mrenders summary cards, status breakdown and the audit activity feed [33m 375[2mms[22m[39m
+ [32m  [39m src/test/pagination.test.js [2m([22m[2m3 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m8 passed[39m[22m[90m (8)[39m
+[2m      Tests [22m [1m[32m74 passed[39m[22m[90m (74)[39m
+[2m   Start at [22m 18:34:07
+[2m   Duration [22m 21.63s[2m (transform 2.86s, setup 7.36s, collect 7.14s, tests 15.07s, environment 24.95s, prepare 2.88s)[22m
+
+[34m % [39m[2mCoverage report from [22m[33mv8[39m
+-------------------|---------|----------|---------|---------|-------------------
+File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------------|---------|----------|---------|---------|-------------------
+All files          |   87.76 |    76.82 |    75.4 |   87.76 |                   
+ src               |     100 |      100 |     100 |     100 |                   
+  App.jsx          |     100 |      100 |     100 |     100 |                   
+ src/components    |   96.45 |    80.15 |   86.66 |   96.45 |                   
+  AddToCart.jsx    |   91.22 |    81.81 |     100 |   91.22 | 37-42             
+  ...comeBadge.jsx |     100 |      100 |     100 |     100 |                   
+  CartItemRow.jsx  |     100 |      100 |      60 |     100 |                   
+  HealthStatus.jsx |     100 |    42.85 |     100 |     100 | 22-41             
+  ...djustForm.jsx |   98.55 |       70 |      80 |   98.55 | 79                
+  ...atusBadge.jsx |     100 |      100 |     100 |     100 |                   
+  Navbar.jsx       |   95.83 |    97.05 |   66.66 |   95.83 | 11-13             
+  ...atusBadge.jsx |     100 |      100 |     100 |     100 |                   
+  ProductForm.jsx  |   96.74 |    46.66 |     100 |   96.74 | 48-49,110,141     
+  RequireRole.jsx  |   88.23 |       80 |     100 |   88.23 | 25-26             
+  States.jsx       |   95.08 |    81.81 |     100 |   95.08 | 24,49-50          
+ src/constants     |     100 |    69.23 |     100 |     100 |                   
+  auditStatus.js   |     100 |       60 |     100 |     100 | 25,77             
+  invoiceStatus.js |     100 |       75 |     100 |     100 | 25                
+  orderStatus.js   |     100 |       75 |     100 |     100 | 59                
+ src/context       |   93.42 |     82.6 |   66.66 |   93.42 |                   
+  AuthContext.jsx  |   93.42 |     82.6 |   66.66 |   93.42 | 43-48             
+ src/hooks         |     100 |       80 |     100 |     100 |                   
+  useApi.js        |     100 |       80 |     100 |     100 | 37,41             
+  useHealth.js     |     100 |       80 |     100 |     100 | 28                
+ src/pages         |      83 |    72.72 |    65.3 |      83 |                   
+  ...ductsPage.jsx |   79.67 |    53.57 |   53.84 |   79.67 | ...,79-81,185-205 
+  ...tLogsPage.jsx |   87.41 |    63.63 |   45.45 |   87.41 | 161-181           
+  CartPage.jsx     |     100 |    93.75 |     100 |     100 | 83,101            
+  ...boardPage.jsx |   94.21 |     50.9 |   85.71 |   94.21 | ...85,233,252-253 
+  ...ntoryPage.jsx |   86.57 |    79.16 |    62.5 |   86.57 | ...19,130,154-172 
+  ...eListPage.jsx |   81.81 |    81.81 |      50 |   81.81 | 63-65,123-143     
+  InvoicePage.jsx  |   97.14 |    76.19 |   71.42 |   97.14 | ...00,213-215,248 
+  LoginPage.jsx    |    5.63 |      100 |       0 |    5.63 | 11-92             
+  ...ationPage.jsx |      90 |       75 |     100 |      90 | 24-32             
+  ...etailPage.jsx |    97.7 |    86.84 |   85.71 |    97.7 | 75,116-118        
+  ...storyPage.jsx |   81.51 |    81.81 |      50 |   81.51 | 57-59,115-135     
+  ...ssingPage.jsx |   85.95 |       80 |   66.66 |   85.95 | 125-143           
+  ...etailPage.jsx |     100 |    78.57 |     100 |     100 | 30,50-61          
+  ProductsPage.jsx |   92.85 |    81.25 |   55.55 |   92.85 | ...,76-78,116,145 
+  RegisterPage.jsx |   93.75 |    64.28 |     100 |   93.75 | ...19-121,161-163 
+  UsersPage.jsx    |    6.01 |      100 |       0 |    6.01 | 13-164            
+ src/services      |   92.85 |    96.22 |   83.78 |   92.85 |                   
+  api.js           |   92.85 |    96.22 |   83.78 |   92.85 | ...44-245,247-252 
+ src/utils         |    65.9 |    76.92 |     100 |    65.9 |                   
+  pagination.js    |     100 |    81.81 |     100 |     100 | 14,16             
+  uuid.js          |   44.44 |       50 |     100 |   44.44 | 13-27             
+-------------------|---------|----------|---------|---------|-------------------
+EXITCODE=0

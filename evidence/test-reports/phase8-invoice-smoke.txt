@@ -1,0 +1,23 @@
+﻿Phase 8 invoice smoke ΓåÆ http://localhost:4000
+  ok  cart add 2 units returns 2xx
+  ok  order placed 201
+  ok  order has a server grand_total
+  ok  no invoice before ship (404)
+  ok  transition ΓåÆ confirmed returns 200
+  ok  transition ΓåÆ processing returns 200
+  ok  transition ΓåÆ shipped returns 200
+  ok  invoice exists after ship (200)
+  ok  invoice number matches INV-YYYY-NNNNNN
+  ok  invoice status is issued
+  ok  invoice totals equal the order snapshot
+  ok  invoice carries the demo label
+  ok  invoice has the order line items
+  ok  customer list contains their invoice
+  (skip foreign/void-customer checks: register unavailable ΓÇö 400 )
+  ok  staff void ΓåÆ 200 status voided
+  ok  void preserves the totals
+  ok  a second shipped order yields an ISSUED invoice for the demo
+  ok  invoice numbers increase within the year
+
+Result: SKU=WIDGET-01 issuedInvoice=INV-2026-000004 voidedInvoice=INV-2026-000003
+Smoke checks: 18 passed, 0 failed

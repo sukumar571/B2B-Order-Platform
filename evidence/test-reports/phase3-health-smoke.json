@@ -1,0 +1,9 @@
+{
+    "status":  "ok",
+    "uptimeSeconds":  3,
+    "timestamp":  "2026-10-21T17:26:21.896Z",
+    "db":  {
+               "state":  "up",
+               "latencyMs":  47
+           }
+}

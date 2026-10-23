@@ -1,0 +1,46 @@
+{
+  "name": "b2b-order-management-platform",
+  "version": "1.0.0",
+  "private": true,
+  "description": "B2B Order Management Platform — monorepo orchestration (Phase 13: Docker & reproducible deployment)",
+  "scripts": {
+    "install:all": "npm install && npm install --prefix backend && npm install --prefix frontend && npm install --prefix e2e",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "build:frontend": "npm --prefix frontend run build",
+    "test:backend": "npm --prefix backend run test",
+    "test:frontend": "npm --prefix frontend run test",
+    "test": "npm run test:backend && npm run test:frontend",
+    "test:integration": "npm --prefix backend run test:integration",
+    "test:e2e": "npm --prefix e2e run test",
+    "e2e:bootstrap": "npm --prefix e2e run bootstrap",
+    "test:all": "npm run test && npm run test:integration && npm run test:e2e",
+    "coverage:backend": "npm --prefix backend run test:coverage",
+    "coverage:frontend": "npm --prefix frontend run test:coverage",
+    "coverage": "npm run coverage:backend && npm run coverage:frontend",
+    "db:create": "npm --prefix backend run db:create",
+    "db:migrate": "npm --prefix backend run db:migrate",
+    "db:migrate:down": "npm --prefix backend run db:migrate:down",
+    "db:seed": "npm --prefix backend run db:seed",
+    "db:health": "npm --prefix backend run db:health",
+    "db:up": "docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d db",
+    "docker:build": "docker compose build",
+    "docker:up": "docker compose up -d",
+    "docker:up:dev": "docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d",
+    "docker:down": "docker compose down",
+    "docker:ps": "docker compose ps",
+    "docker:logs": "docker compose logs -f",
+    "docker:migrate": "docker compose run --rm migrate",
+    "docker:seed": "docker compose --profile tools run --rm seed",
+    "docker:smoke": "node scripts/deploy-smoke.js",
+    "lint": "npm --prefix backend run lint && npm --prefix frontend run lint",
+    "format": "prettier --write \"**/*.{js,jsx,json,md,css,html}\"",
+    "format:check": "prettier --check \"**/*.{js,jsx,json,md,css,html}\""
+  },
+  "devDependencies": {
+    "prettier": "^3.5.3"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

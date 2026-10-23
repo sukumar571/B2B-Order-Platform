@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment / secrets — never commit real .env files (requirements.md C-06, NFR-03)
+.env
+.env.*
+!.env.example
+**/.env
+!**/.env.example
+
+# Build output
+dist/
+build/
+**/dist/
+**/build/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Coverage / test artifacts
+coverage/
+**/coverage/
+*.ecpr
+.nyc_output/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Docker
+postgres-data/
+
+# Database backups / dump artifacts — never commit data extracts
+backups/

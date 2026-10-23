@@ -1,0 +1,1018 @@
+{
+  "ranAt": "2026-10-22T10:05:41.803Z",
+  "base": "http://localhost:4000",
+  "minted": {
+    "SKU": "SMOKE9-1792663538680",
+    "productId": "14",
+    "shipOrderId": "8",
+    "cancelOrderId": "9",
+    "invoiceId": "6",
+    "throwawayId": "10"
+  },
+  "totalSteps": 72,
+  "failures": 0,
+  "results": [
+    {
+      "name": "health",
+      "method": "GET",
+      "path": "/api/health",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true
+    },
+    {
+      "name": "a wrong-password login is refused (401)",
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 401,
+      "expected": [
+        401
+      ],
+      "pass": true,
+      "error": {
+        "code": "INVALID_CREDENTIALS",
+        "message": "Invalid email or password"
+      }
+    },
+    {
+      "name": "admin login",
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true
+    },
+    {
+      "name": "order-manager (agent) login",
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true
+    },
+    {
+      "name": "customer login",
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true
+    },
+    {
+      "name": "admin creates a product",
+      "method": "POST",
+      "path": "/api/products",
+      "status": 201,
+      "expected": [
+        201
+      ],
+      "pass": true
+    },
+    {
+      "name": "admin receives 100 units (STOCK_ADJUSTED)",
+      "method": "PATCH",
+      "path": "/api/inventory/14",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true
+    },
+    {
+      "name": "admin deactivates the product (PRODUCT_DEACTIVATED)",
+      "method": "PATCH",
+      "path": "/api/products/14",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true
+    },
+    {
+      "name": "admin re-activates the product (PRODUCT_ACTIVATED)",
+      "method": "PATCH",
+      "path": "/api/products/14",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true
+    },
+    {
+      "name": "empty the customer cart",
+      "method": "DELETE",
+      "path": "/api/cart",
+      "status": 204,
+      "expected": [
+        200,
+        204
+      ],
+      "pass": true
+    },
+    {
+      "name": "customer adds 3 units",
+      "method": "POST",
+      "path": "/api/cart/items",
+      "status": 201,
+      "expected": [
+        200,
+        201
+      ],
+      "pass": true
+    },
+    {
+      "name": "customer places the order (STOCK_RESERVED + ORDER_CREATED)",
+      "method": "POST",
+      "path": "/api/orders",
+      "status": 201,
+      "expected": [
+        201
+      ],
+      "pass": true
+    },
+    {
+      "name": "advance order → confirmed",
+      "method": "PATCH",
+      "path": "/api/orders/8/status",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true
+    },
+    {
+      "name": "advance order → processing",
+      "method": "PATCH",
+      "path": "/api/orders/8/status",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true
+    },
+    {
+      "name": "advance order → shipped",
+      "method": "PATCH",
+      "path": "/api/orders/8/status",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true
+    },
+    {
+      "name": "the shipment minted an invoice (INVOICE_ISSUED)",
+      "method": "GET",
+      "path": "/api/orders/8/invoice",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true
+    },
+    {
+      "name": "staff voids the invoice (INVOICE_VOIDED)",
+      "method": "POST",
+      "path": "/api/invoices/6/void",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true
+    },
+    {
+      "name": "customer adds 2 units again",
+      "method": "POST",
+      "path": "/api/cart/items",
+      "status": 201,
+      "expected": [
+        200,
+        201
+      ],
+      "pass": true
+    },
+    {
+      "name": "customer places the second order",
+      "method": "POST",
+      "path": "/api/orders",
+      "status": 201,
+      "expected": [
+        201
+      ],
+      "pass": true
+    },
+    {
+      "name": "the order is cancelled (STOCK_RELEASED + ORDER_CANCELLED)",
+      "method": "POST",
+      "path": "/api/orders/9/cancel",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true
+    },
+    {
+      "name": "register a throwaway customer to administer",
+      "method": "POST",
+      "path": "/api/auth/register",
+      "status": 201,
+      "expected": [
+        200,
+        201
+      ],
+      "pass": true
+    },
+    {
+      "name": "admin promotes the throwaway to agent (USER_ROLE_CHANGED)",
+      "method": "PATCH",
+      "path": "/api/users/10",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true
+    },
+    {
+      "name": "admin deactivates the throwaway (USER_STATUS_CHANGED)",
+      "method": "PATCH",
+      "path": "/api/users/10",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true
+    },
+    {
+      "name": "the now-disabled account cannot log in (ACCOUNT_DISABLED_ATTEMPT)",
+      "method": "POST",
+      "path": "/api/auth/login",
+      "status": 403,
+      "expected": [
+        403
+      ],
+      "pass": true,
+      "error": {
+        "code": "ACCOUNT_DISABLED",
+        "message": "This account has been disabled"
+      }
+    },
+    {
+      "name": "an admin cannot demote their OWN account (self-lockout)",
+      "method": "PATCH",
+      "path": "/api/users/1",
+      "status": 409,
+      "expected": [
+        409
+      ],
+      "pass": true,
+      "error": {
+        "code": "SELF_ROLE_CHANGE_NOT_ALLOWED",
+        "message": "You cannot change your own role — another admin must do so"
+      }
+    },
+    {
+      "name": "anon cannot read the audit trail",
+      "method": "GET",
+      "path": "/api/audit-logs",
+      "status": 401,
+      "expected": [
+        401
+      ],
+      "pass": true,
+      "error": {
+        "code": "UNAUTHENTICATED",
+        "message": "Authentication required"
+      }
+    },
+    {
+      "name": "customer cannot read the audit trail",
+      "method": "GET",
+      "path": "/api/audit-logs",
+      "status": 403,
+      "expected": [
+        403
+      ],
+      "pass": true,
+      "error": {
+        "code": "FORBIDDEN",
+        "message": "You do not have permission to perform this action"
+      }
+    },
+    {
+      "name": "agent (order manager) cannot read the audit trail",
+      "method": "GET",
+      "path": "/api/audit-logs",
+      "status": 403,
+      "expected": [
+        403
+      ],
+      "pass": true,
+      "error": {
+        "code": "FORBIDDEN",
+        "message": "You do not have permission to perform this action"
+      }
+    },
+    {
+      "name": "customer cannot open the full dashboard",
+      "method": "GET",
+      "path": "/api/reports/dashboard",
+      "status": 403,
+      "expected": [
+        403
+      ],
+      "pass": true,
+      "error": {
+        "code": "FORBIDDEN",
+        "message": "You do not have permission to perform this action"
+      }
+    },
+    {
+      "name": "agent cannot open the full dashboard (embeds the audit feed)",
+      "method": "GET",
+      "path": "/api/reports/dashboard",
+      "status": 403,
+      "expected": [
+        403
+      ],
+      "pass": true,
+      "error": {
+        "code": "FORBIDDEN",
+        "message": "You do not have permission to perform this action"
+      }
+    },
+    {
+      "name": "POST /api/audit-logs has no route (read-only)",
+      "method": "POST",
+      "path": "/api/audit-logs",
+      "status": 404,
+      "expected": [
+        404,
+        405
+      ],
+      "pass": true,
+      "error": {
+        "code": "NOT_FOUND",
+        "message": "Route not found: POST /api/audit-logs"
+      }
+    },
+    {
+      "name": "PATCH /api/audit-logs has no route (read-only)",
+      "method": "PATCH",
+      "path": "/api/audit-logs",
+      "status": 404,
+      "expected": [
+        404,
+        405
+      ],
+      "pass": true,
+      "error": {
+        "code": "NOT_FOUND",
+        "message": "Route not found: PATCH /api/audit-logs"
+      }
+    },
+    {
+      "name": "PUT /api/audit-logs has no route (read-only)",
+      "method": "PUT",
+      "path": "/api/audit-logs",
+      "status": 404,
+      "expected": [
+        404,
+        405
+      ],
+      "pass": true,
+      "error": {
+        "code": "NOT_FOUND",
+        "message": "Route not found: PUT /api/audit-logs"
+      }
+    },
+    {
+      "name": "DELETE /api/audit-logs has no route (read-only)",
+      "method": "DELETE",
+      "path": "/api/audit-logs",
+      "status": 404,
+      "expected": [
+        404,
+        405
+      ],
+      "pass": true,
+      "error": {
+        "code": "NOT_FOUND",
+        "message": "Route not found: DELETE /api/audit-logs"
+      }
+    },
+    {
+      "name": "admin can open the full dashboard",
+      "method": "GET",
+      "path": "/api/reports/dashboard",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true
+    },
+    {
+      "name": "assert: the admin dashboard embeds the audit activity feed",
+      "pass": true,
+      "detail": [
+        "audience",
+        "generated_at",
+        "window",
+        "totals",
+        "orders_by_status",
+        "low_stock",
+        "recent_orders",
+        "audit",
+        "metric_definitions"
+      ],
+      "assert": true
+    },
+    {
+      "name": "assert: booked_order_value is defined and explicitly NOT called revenue",
+      "pass": true,
+      "detail": "SUM(grand_total) of NON-CANCELLED orders created in the window. This is booked DEMAND, not collected revenue — the platform does not process payments, so no revenue figure is reported.",
+      "assert": true
+    },
+    {
+      "name": "assert: no payload key claims a collected-revenue figure",
+      "pass": true,
+      "detail": [
+        "total_orders",
+        "cancelled_orders",
+        "active_orders",
+        "booked_order_value",
+        "gross_value_including_cancelled"
+      ],
+      "assert": true
+    },
+    {
+      "name": "agent can open the order-summary (staff view)",
+      "method": "GET",
+      "path": "/api/reports/order-summary",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true
+    },
+    {
+      "name": "assert: the agent order-summary carries the SAME metrics but NO audit feed",
+      "pass": true,
+      "detail": [
+        "audience",
+        "generated_at",
+        "window",
+        "totals",
+        "orders_by_status",
+        "low_stock",
+        "recent_orders",
+        "metric_definitions"
+      ],
+      "assert": true
+    },
+    {
+      "name": "assert: the agent order-summary audience is order_manager",
+      "pass": true,
+      "detail": "order_manager",
+      "assert": true
+    },
+    {
+      "name": "agent can open the low-stock report",
+      "method": "GET",
+      "path": "/api/reports/low-stock?limit=5",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true,
+      "meta": {
+        "page": 1,
+        "limit": 5,
+        "total": 3
+      },
+      "count": 3
+    },
+    {
+      "name": "assert: every low-stock row is at or below its threshold",
+      "pass": true,
+      "detail": [
+        [
+          "LEGACY-01",
+          3,
+          20
+        ],
+        [
+          "GADGET-B",
+          15,
+          20
+        ],
+        [
+          "SMOKE-1792610272890",
+          0,
+          5
+        ]
+      ],
+      "assert": true
+    },
+    {
+      "name": "filter outcome=failure returns the security events",
+      "method": "GET",
+      "path": "/api/audit-logs?outcome=failure&limit=50",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true,
+      "meta": {
+        "page": 1,
+        "limit": 50,
+        "total": 4
+      },
+      "count": 4
+    },
+    {
+      "name": "assert: the failure filter yields only failure-outcome rows",
+      "pass": true,
+      "detail": [
+        [
+          "ACCOUNT_DISABLED_ATTEMPT",
+          "failure"
+        ],
+        [
+          "LOGIN_FAILED",
+          "failure"
+        ],
+        [
+          "LOGIN_FAILED",
+          "failure"
+        ],
+        [
+          "LOGIN_FAILED",
+          "failure"
+        ]
+      ],
+      "assert": true
+    },
+    {
+      "name": "assert: LOGIN_FAILED is present among the failures",
+      "pass": true,
+      "detail": [
+        "ACCOUNT_DISABLED_ATTEMPT",
+        "LOGIN_FAILED",
+        "LOGIN_FAILED",
+        "LOGIN_FAILED"
+      ],
+      "assert": true
+    },
+    {
+      "name": "filter action=ORDER_CREATED",
+      "method": "GET",
+      "path": "/api/audit-logs?action=ORDER_CREATED&limit=50",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true,
+      "meta": {
+        "page": 1,
+        "limit": 50,
+        "total": 9
+      },
+      "count": 9
+    },
+    {
+      "name": "assert: the action filter yields only ORDER_CREATED rows",
+      "pass": true,
+      "detail": [
+        "ORDER_CREATED",
+        "ORDER_CREATED",
+        "ORDER_CREATED",
+        "ORDER_CREATED",
+        "ORDER_CREATED",
+        "ORDER_CREATED",
+        "ORDER_CREATED",
+        "ORDER_CREATED",
+        "ORDER_CREATED"
+      ],
+      "assert": true
+    },
+    {
+      "name": "pagination page=1&limit=5",
+      "method": "GET",
+      "path": "/api/audit-logs?page=1&limit=5",
+      "status": 200,
+      "expected": [
+        200
+      ],
+      "pass": true,
+      "meta": {
+        "page": 1,
+        "limit": 5,
+        "total": 93
+      },
+      "count": 5
+    },
+    {
+      "name": "assert: limit is honoured and meta reports a larger total",
+      "pass": true,
+      "detail": {
+        "returned": 5,
+        "meta": {
+          "page": 1,
+          "limit": 5,
+          "total": 93
+        }
+      },
+      "assert": true
+    },
+    {
+      "name": "limit above the clamp (100) is rejected",
+      "method": "GET",
+      "path": "/api/audit-logs?limit=500",
+      "status": 400,
+      "expected": [
+        400
+      ],
+      "pass": true,
+      "error": {
+        "code": "VALIDATION_ERROR",
+        "message": "Request payload validation failed"
+      }
+    },
+    {
+      "name": "an unknown filter parameter is rejected (strict)",
+      "method": "GET",
+      "path": "/api/audit-logs?role=admin",
+      "status": 400,
+      "expected": [
+        400
+      ],
+      "pass": true,
+      "error": {
+        "code": "VALIDATION_ERROR",
+        "message": "Request payload validation failed"
+      }
+    },
+    {
+      "name": "assert: event matrix: PRODUCT_CREATED was recorded by this run",
+      "pass": true,
+      "detail": [
+        "PRODUCT_CREATED",
+        "STOCK_ADJUSTED",
+        "PRODUCT_DEACTIVATED",
+        "PRODUCT_ACTIVATED",
+        "ORDER_CREATED",
+        "STOCK_RESERVED",
+        "ORDER_STATUS_CHANGED",
+        "ORDER_STATUS_CHANGED",
+        "STOCK_CONSUMED",
+        "ORDER_STATUS_CHANGED",
+        "INVOICE_ISSUED",
+        "INVOICE_VOIDED",
+        "ORDER_CREATED",
+        "STOCK_RESERVED",
+        "STOCK_RELEASED",
+        "ORDER_CANCELLED"
+      ],
+      "assert": true
+    },
+    {
+      "name": "assert: event matrix: STOCK_ADJUSTED was recorded by this run",
+      "pass": true,
+      "detail": [
+        "PRODUCT_CREATED",
+        "STOCK_ADJUSTED",
+        "PRODUCT_DEACTIVATED",
+        "PRODUCT_ACTIVATED",
+        "ORDER_CREATED",
+        "STOCK_RESERVED",
+        "ORDER_STATUS_CHANGED",
+        "ORDER_STATUS_CHANGED",
+        "STOCK_CONSUMED",
+        "ORDER_STATUS_CHANGED",
+        "INVOICE_ISSUED",
+        "INVOICE_VOIDED",
+        "ORDER_CREATED",
+        "STOCK_RESERVED",
+        "STOCK_RELEASED",
+        "ORDER_CANCELLED"
+      ],
+      "assert": true
+    },
+    {
+      "name": "assert: event matrix: PRODUCT_DEACTIVATED was recorded by this run",
+      "pass": true,
+      "detail": [
+        "PRODUCT_CREATED",
+        "STOCK_ADJUSTED",
+        "PRODUCT_DEACTIVATED",
+        "PRODUCT_ACTIVATED",
+        "ORDER_CREATED",
+        "STOCK_RESERVED",
+        "ORDER_STATUS_CHANGED",
+        "ORDER_STATUS_CHANGED",
+        "STOCK_CONSUMED",
+        "ORDER_STATUS_CHANGED",
+        "INVOICE_ISSUED",
+        "INVOICE_VOIDED",
+        "ORDER_CREATED",
+        "STOCK_RESERVED",
+        "STOCK_RELEASED",
+        "ORDER_CANCELLED"
+      ],
+      "assert": true
+    },
+    {
+      "name": "assert: event matrix: PRODUCT_ACTIVATED was recorded by this run",
+      "pass": true,
+      "detail": [
+        "PRODUCT_CREATED",
+        "STOCK_ADJUSTED",
+        "PRODUCT_DEACTIVATED",
+        "PRODUCT_ACTIVATED",
+        "ORDER_CREATED",
+        "STOCK_RESERVED",
+        "ORDER_STATUS_CHANGED",
+        "ORDER_STATUS_CHANGED",
+        "STOCK_CONSUMED",
+        "ORDER_STATUS_CHANGED",
+        "INVOICE_ISSUED",
+        "INVOICE_VOIDED",
+        "ORDER_CREATED",
+        "STOCK_RESERVED",
+        "STOCK_RELEASED",
+        "ORDER_CANCELLED"
+      ],
+      "assert": true
+    },
+    {
+      "name": "assert: event matrix: ORDER_CREATED was recorded by this run",
+      "pass": true,
+      "detail": [
+        "PRODUCT_CREATED",
+        "STOCK_ADJUSTED",
+        "PRODUCT_DEACTIVATED",
+        "PRODUCT_ACTIVATED",
+        "ORDER_CREATED",
+        "STOCK_RESERVED",
+        "ORDER_STATUS_CHANGED",
+        "ORDER_STATUS_CHANGED",
+        "STOCK_CONSUMED",
+        "ORDER_STATUS_CHANGED",
+        "INVOICE_ISSUED",
+        "INVOICE_VOIDED",
+        "ORDER_CREATED",
+        "STOCK_RESERVED",
+        "STOCK_RELEASED",
+        "ORDER_CANCELLED"
+      ],
+      "assert": true
+    },
+    {
+      "name": "assert: event matrix: STOCK_RESERVED was recorded by this run",
+      "pass": true,
+      "detail": [
+        "PRODUCT_CREATED",
+        "STOCK_ADJUSTED",
+        "PRODUCT_DEACTIVATED",
+        "PRODUCT_ACTIVATED",
+        "ORDER_CREATED",
+        "STOCK_RESERVED",
+        "ORDER_STATUS_CHANGED",
+        "ORDER_STATUS_CHANGED",
+        "STOCK_CONSUMED",
+        "ORDER_STATUS_CHANGED",
+        "INVOICE_ISSUED",
+        "INVOICE_VOIDED",
+        "ORDER_CREATED",
+        "STOCK_RESERVED",
+        "STOCK_RELEASED",
+        "ORDER_CANCELLED"
+      ],
+      "assert": true
+    },
+    {
+      "name": "assert: event matrix: ORDER_STATUS_CHANGED was recorded by this run",
+      "pass": true,
+      "detail": [
+        "PRODUCT_CREATED",
+        "STOCK_ADJUSTED",
+        "PRODUCT_DEACTIVATED",
+        "PRODUCT_ACTIVATED",
+        "ORDER_CREATED",
+        "STOCK_RESERVED",
+        "ORDER_STATUS_CHANGED",
+        "ORDER_STATUS_CHANGED",
+        "STOCK_CONSUMED",
+        "ORDER_STATUS_CHANGED",
+        "INVOICE_ISSUED",
+        "INVOICE_VOIDED",
+        "ORDER_CREATED",
+        "STOCK_RESERVED",
+        "STOCK_RELEASED",
+        "ORDER_CANCELLED"
+      ],
+      "assert": true
+    },
+    {
+      "name": "assert: event matrix: STOCK_CONSUMED was recorded by this run",
+      "pass": true,
+      "detail": [
+        "PRODUCT_CREATED",
+        "STOCK_ADJUSTED",
+        "PRODUCT_DEACTIVATED",
+        "PRODUCT_ACTIVATED",
+        "ORDER_CREATED",
+        "STOCK_RESERVED",
+        "ORDER_STATUS_CHANGED",
+        "ORDER_STATUS_CHANGED",
+        "STOCK_CONSUMED",
+        "ORDER_STATUS_CHANGED",
+        "INVOICE_ISSUED",
+        "INVOICE_VOIDED",
+        "ORDER_CREATED",
+        "STOCK_RESERVED",
+        "STOCK_RELEASED",
+        "ORDER_CANCELLED"
+      ],
+      "assert": true
+    },
+    {
+      "name": "assert: event matrix: INVOICE_ISSUED was recorded by this run",
+      "pass": true,
+      "detail": [
+        "PRODUCT_CREATED",
+        "STOCK_ADJUSTED",
+        "PRODUCT_DEACTIVATED",
+        "PRODUCT_ACTIVATED",
+        "ORDER_CREATED",
+        "STOCK_RESERVED",
+        "ORDER_STATUS_CHANGED",
+        "ORDER_STATUS_CHANGED",
+        "STOCK_CONSUMED",
+        "ORDER_STATUS_CHANGED",
+        "INVOICE_ISSUED",
+        "INVOICE_VOIDED",
+        "ORDER_CREATED",
+        "STOCK_RESERVED",
+        "STOCK_RELEASED",
+        "ORDER_CANCELLED"
+      ],
+      "assert": true
+    },
+    {
+      "name": "assert: event matrix: INVOICE_VOIDED was recorded by this run",
+      "pass": true,
+      "detail": [
+        "PRODUCT_CREATED",
+        "STOCK_ADJUSTED",
+        "PRODUCT_DEACTIVATED",
+        "PRODUCT_ACTIVATED",
+        "ORDER_CREATED",
+        "STOCK_RESERVED",
+        "ORDER_STATUS_CHANGED",
+        "ORDER_STATUS_CHANGED",
+        "STOCK_CONSUMED",
+        "ORDER_STATUS_CHANGED",
+        "INVOICE_ISSUED",
+        "INVOICE_VOIDED",
+        "ORDER_CREATED",
+        "STOCK_RESERVED",
+        "STOCK_RELEASED",
+        "ORDER_CANCELLED"
+      ],
+      "assert": true
+    },
+    {
+      "name": "assert: event matrix: ORDER_CANCELLED was recorded by this run",
+      "pass": true,
+      "detail": [
+        "PRODUCT_CREATED",
+        "STOCK_ADJUSTED",
+        "PRODUCT_DEACTIVATED",
+        "PRODUCT_ACTIVATED",
+        "ORDER_CREATED",
+        "STOCK_RESERVED",
+        "ORDER_STATUS_CHANGED",
+        "ORDER_STATUS_CHANGED",
+        "STOCK_CONSUMED",
+        "ORDER_STATUS_CHANGED",
+        "INVOICE_ISSUED",
+        "INVOICE_VOIDED",
+        "ORDER_CREATED",
+        "STOCK_RESERVED",
+        "STOCK_RELEASED",
+        "ORDER_CANCELLED"
+      ],
+      "assert": true
+    },
+    {
+      "name": "assert: event matrix: STOCK_RELEASED was recorded by this run",
+      "pass": true,
+      "detail": [
+        "PRODUCT_CREATED",
+        "STOCK_ADJUSTED",
+        "PRODUCT_DEACTIVATED",
+        "PRODUCT_ACTIVATED",
+        "ORDER_CREATED",
+        "STOCK_RESERVED",
+        "ORDER_STATUS_CHANGED",
+        "ORDER_STATUS_CHANGED",
+        "STOCK_CONSUMED",
+        "ORDER_STATUS_CHANGED",
+        "INVOICE_ISSUED",
+        "INVOICE_VOIDED",
+        "ORDER_CREATED",
+        "STOCK_RESERVED",
+        "STOCK_RELEASED",
+        "ORDER_CANCELLED"
+      ],
+      "assert": true
+    },
+    {
+      "name": "assert: every business row from this run has outcome=success",
+      "pass": true,
+      "detail": [],
+      "assert": true
+    },
+    {
+      "name": "assert: LOGIN_FAILED / ACCOUNT_DISABLED_ATTEMPT are stored as outcome=failure",
+      "pass": true,
+      "detail": [
+        {
+          "action": "ACCOUNT_DISABLED_ATTEMPT",
+          "outcome": "failure"
+        },
+        {
+          "action": "LOGIN_FAILED",
+          "outcome": "failure"
+        },
+        {
+          "action": "LOGIN_FAILED",
+          "outcome": "failure"
+        },
+        {
+          "action": "LOGIN_FAILED",
+          "outcome": "failure"
+        }
+      ],
+      "assert": true
+    },
+    {
+      "name": "assert: the promoted + deactivated throwaway carries USER_ROLE_CHANGED and USER_STATUS_CHANGED rows",
+      "pass": true,
+      "detail": [
+        "USER_ROLE_CHANGED",
+        "USER_STATUS_CHANGED"
+      ],
+      "assert": true
+    },
+    {
+      "name": "assert: no audit details JSON carries a secret-bearing key",
+      "pass": true,
+      "detail": {
+        "n": 0
+      },
+      "assert": true
+    },
+    {
+      "name": "assert: the database refuses UPDATE on audit_logs (append-only trigger)",
+      "pass": true,
+      "detail": {
+        "updateBlocked": true
+      },
+      "assert": true
+    },
+    {
+      "name": "assert: the database refuses DELETE on audit_logs (append-only trigger)",
+      "pass": true,
+      "detail": {
+        "deleteBlocked": true
+      },
+      "assert": true
+    },
+    {
+      "name": "assert: outcome CHECK constraint rejects a value outside ('success','failure')",
+      "pass": true,
+      "detail": {
+        "badOutcomeRejected": true
+      },
+      "assert": true
+    },
+    {
+      "name": "audit trail total rows",
+      "pass": true,
+      "assert": true,
+      "detail": {
+        "n": 93
+      }
+    }
+  ]
+}

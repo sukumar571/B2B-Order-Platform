@@ -1,0 +1,45 @@
+﻿# built-image audit (Phase 13)
+# local 2026-10-23 19:30:01 +05:30 | utc 2026-10-23T14:00:01Z
+--- image config: user + healthcheck + cmd ---
+api: User=node Healthcheck=[CMD-SHELL node -e "fetch('http://127.0.0.1:4000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"] Cmd=[node src/server.js] WorkingDir=/app
+web: Healthcheck=[CMD-SHELL curl -fsS http://127.0.0.1/ >/dev/null && curl -fsS http://127.0.0.1/api/health >/dev/null || exit 1] Cmd=[nginx -g daemon off;]
+
+--- runtime identity inside API container (expect uid 1000 node) ---
+uid=1000(node) gid=1000(node) groups=1000(node),1000(node)
+
+--- /app tree (no .env, no tests, no source-only dirs) ---
+.
+..
+migrations
+node_modules
+package.json
+scripts
+src
+env-file
+
+--- dependency layer: devDependencies absent, runtime deps present ---
+devDeps leaked (expect NONE):
+NONE
+runtime deps (expect all listed):
+bcryptjs
+cookie-parser
+cors
+express
+helmet
+jsonwebtoken
+pg
+zod
+
+--- web image: built SPA assets only (no .env, no src) ---
+50x.html
+assets
+index.html
+env-file
+
+--- image sizes ---
+
+b2b-oms-api:local 226MB
+b2b-oms-web:local 74MB
+postgres:16-alpine 420MB
+
+

@@ -1,0 +1,21 @@
+﻿
+[1m[46m RUN [49m[22m [36mv3.2.7 [39m[90mE:/Users/sudhe/B2B Order Management Platform/frontend[39m
+
+ [32mΓ£ô[39m src/test/cart.test.jsx [2m([22m[2m11 tests[22m[2m)[22m[33m 1073[2mms[22m[39m
+ [32mΓ£ô[39m src/test/orders.test.jsx [2m([22m[2m14 tests[22m[2m)[22m[33m 1378[2mms[22m[39m
+   [33m[2mΓ£ô[22m[39m OrderDetailPage[2m > [22mcancels with a reason via POST /:id/cancel and re-renders the state [33m 554[2mms[22m[39m
+ [32mΓ£ô[39m src/test/catalog.test.jsx [2m([22m[2m16 tests[22m[2m)[22m[33m 2709[2mms[22m[39m
+   [33m[2mΓ£ô[22m[39m ProductsPage ΓÇö live data, states and pagination[2m > [22mderives the page count from total/limit and pages forward through the API [33m 333[2mms[22m[39m
+   [33m[2mΓ£ô[22m[39m AdminProductsPage (ADMIN only)[2m > [22msurfaces backend validation details from the add-product form [33m 631[2mms[22m[39m
+   [33m[2mΓ£ô[22m[39m InventoryPage (ADMIN / ORDER_MANAGER)[2m > [22madmin adjustment PATCHes /api/inventory/:id and shows the audited result [33m 458[2mms[22m[39m
+   [33m[2mΓ£ô[22m[39m InventoryPage (ADMIN / ORDER_MANAGER)[2m > [22mshows the INSUFFICIENT_STOCK error the backend returns for an over-drawdown [33m 456[2mms[22m[39m
+ [32mΓ£ô[39m src/test/App.test.jsx [2m([22m[2m2 tests[22m[2m)[22m[32m 261[2mms[22m[39m
+ [32mΓ£ô[39m src/test/invoice.test.jsx [2m([22m[2m10 tests[22m[2m)[22m[33m 932[2mms[22m[39m
+   [33m[2mΓ£ô[22m[39m InvoicePage (printable document)[2m > [22moffers staff a void action that posts only a reason and flips status [33m 476[2mms[22m[39m
+ [32mΓ£ô[39m src/test/pagination.test.js [2m([22m[2m3 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m6 passed[39m[22m[90m (6)[39m
+[2m      Tests [22m [1m[32m56 passed[39m[22m[90m (56)[39m
+[2m   Start at [22m 14:31:07
+[2m   Duration [22m 20.60s[2m (transform 2.06s, setup 11.44s, collect 7.47s, tests 6.36s, environment 30.13s, prepare 3.29s)[22m
+

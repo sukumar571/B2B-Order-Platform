@@ -1,0 +1,418 @@
+BACKEND COVERAGE RUN (npm run coverage:backend) START: 2026-10-23 18:38:12 +05:30
+Applying migrations to the test database  
+No migrations to run!
+Migrations up completed against postgres://***@localhost:5433/b2b_oms_test.
+Running the full backend suite with V8 coverage  
+
+  b% GET /api/health
+     returns 200 with status ok JSON body (67.8227ms)
+     sends security headers from helmet (12.1488ms)
+     rejects non-GET methods with a consistent 404 JSON error (9.8411ms)
+   GET /api/health (92.1086ms)
+  b% Unknown routes
+     returns consistent JSON 404 envelope with error code (6.988ms)
+     does not leak stack traces or internals in the 404 body (7.0527ms)
+   Unknown routes (14.3389ms)
+  b% Request parsing and error handling
+     malformed JSON body yields 400 INVALID_JSON, not a crash (29.9153ms)
+     oversized JSON body is rejected with 413 (limit from config) (6.9804ms)
+   Request parsing and error handling (37.2308ms)
+  b% Audit trail over HTTP (isolated test DB)
+     endpoint is ADMIN-only (anon 401, customer/agent 403, admin 200) (59.847ms)
+     history is read-only: no create/update/delete route exists (14.161ms)
+     business changes are audited transactionally across the full lifecycle (292.5633ms)
+     failed and successful logins are recorded with the correct outcome (1212.3436ms)
+     filters: outcome, action, entity_type and date range; pagination meta (45.9956ms)
+     malformed filters fail closed (400 VALIDATION_ERROR), never widen the read (19.2338ms)
+   Audit trail over HTTP (isolated test DB) (1732.1186ms)
+  b% audit constants registry
+     every action value is unique and self-consistent (0.8333ms)
+     the Phase 9 additions are all registered (0.1391ms)
+     outcomes are exactly success|failure (0.8563ms)
+     entity types cover the auditable domains (0.194ms)
+   audit constants registry (3.2913ms)
+  b% logAudit outcome behaviour
+     defaults outcome to success and binds it as the 7th param (0.7666ms)
+     records an explicit failure outcome (0.2637ms)
+     rejects an outcome outside the domain (0.6658ms)
+     rejects an action outside the registry (test-mode completeness guard) (0.2156ms)
+     rejects a malformed action string and a missing entityType (0.3877ms)
+   logAudit outcome behaviour (2.5918ms)
+  b% Authentication over HTTP (isolated test DB)
+     POST /api/auth/register creates a CUSTOMER only, hashing the password (408.3949ms)
+     registration can NEVER select ADMIN or ORDER_MANAGER (18.1293ms)
+     duplicate emails are rejected with 409 EMAIL_TAKEN (case-insensitive) (736.5353ms)
+     invalid registration input yields 400 VALIDATION_ERROR without echoing secrets (5.9325ms)
+     POST /api/auth/login succeeds and sets a hardened HttpOnly cookie (769.0059ms)
+     wrong password and unknown email return the identical safe 401 (1091.0891ms)
+     disabled accounts cannot log in (403 ACCOUNT_DISABLED) (772.5983ms)
+     refresh rotates the cookie; reusing a spent token kills the family (406.6736ms)
+     logout clears the cookie and revokes the family (374.2763ms)
+     garbage or missing refresh cookies fail safely with 401 (8.0335ms)
+     GET /api/auth/me returns the hash-free profile of the Bearer identity (383.8587ms)
+     missing, malformed, forged, expired, alg:none, and refresh-type bearer tokens all 401 (400.518ms)
+     a disabled user is rejected even with a still-valid access token (418.5607ms)
+     role middleware: customer 403s admin routes, staff routes admit agent/admin (1188.7469ms)
+     users cannot reach another user  s private data (self-scope + ownership) (815.2432ms)
+     repeated wrong logins hit 429 RATE_LIMITED with envelope + headers (4157.2751ms)
+   Authentication over HTTP (isolated test DB) (12026.607ms)
+  b% auth validators (Zod)
+     accepts a valid registration and normalizes the email to lowercase (3.0707ms)
+     rejects malformed emails, short and complex-less passwords, blank names (1.3643ms)
+     validation details never echo the submitted password (0.2319ms)
+     strict schemas reject unexpected fields    role injection attempts fail (0.8885ms)
+   auth validators (Zod) (6.6762ms)
+  b% token service (JWT)
+     access token round-trips and pins HS256 + iss + aud + typ claims (3.9945ms)
+     malformed tokens are rejected without throwing (0.2596ms)
+     expired tokens are rejected (0.639ms)
+     wrong-signature tokens are rejected (0.3346ms)
+     wrong issuer / audience are rejected (0.5171ms)
+     alg:none tokens are rejected (0.3008ms)
+     a refresh token envelope can NEVER act as a bearer access token (0.7865ms)
+     refresh raw secrets are only ever exposed as SHA-256 hashes (0.3561ms)
+     extractBearer parses the Authorization header strictly (0.2345ms)
+   token service (JWT) (7.7805ms)
+  b% auth service pure helpers
+     toPublicUser strips password material entirely (0.1811ms)
+     ttlMs parses jsonwebtoken-style durations (0.6423ms)
+   auth service pure helpers (0.9158ms)
+  b% authorize / ownership middleware
+     authorize() allows any of the listed roles and 403s the rest (0.3406ms)
+     authorize() 401s unauthenticated requests and validates its role list (0.1554ms)
+     requireSelf demands an authenticated identity (0.1745ms)
+     requireOwnership blocks cross-user access (IDOR) and hides existence (0.3698ms)
+   authorize / ownership middleware (1.2187ms)
+  b% Shopping cart over HTTP (isolated test DB)
+     cart endpoints are customer-only (anon 401, admin/agent 403) (70.7465ms)
+     GET /api/cart starts empty with exact zero totals and no client-settable owner (20.1342ms)
+     POST /api/cart/items adds a line and computes totals SERVER-SIDE (41.8045ms)
+     a client-sent unit_price / total in the body is ignored (strict    400) (20.4473ms)
+     adding an existing product merges quantity instead of duplicating (59.6293ms)
+     quantity 0 / negative / fractional / > max is rejected with 400 (40.6897ms)
+     invalid product_id and missing product_id are rejected with 400 (18.5412ms)
+     adding an inactive product returns 404 and creates no line (29.2511ms)
+     adding more than available stock is refused 409 and reserves nothing (25.0337ms)
+     stock_warning appears when on-hand falls below the cart quantity (no reservation) (52.1524ms)
+     PATCH updates a line quantity; unknown id    404 (62.5536ms)
+     DELETE a line, then DELETE /api/cart empties it (204) (79.6379ms)
+     customers cannot see or mutate another customer  s cart (69.403ms)
+     cart persists across sessions (a fresh token for the same user reloads it) (36.035ms)
+     totals recompute from the CURRENT catalog price at read time (59.9703ms)
+     cart mutations are audited with the actor role (37.1934ms)
+   Shopping cart over HTTP (isolated test DB) (807.4817ms)
+  b% money.toCents / fromCents
+     round-trips 2-decimal strings exactly (0.8116ms)
+     rejects malformed money with more than 2 decimals or negatives (0.2604ms)
+   money.toCents / fromCents (2.091ms)
+  b% money.computeLine (AC-CART-02 fixture)
+     19.99 %  3 @ 7.5%    line_total 59.97, line_tax 4.50 (half-up) (0.2723ms)
+     tax rounds HALF-UP at the .5 boundary (0.1051ms)
+     zero tax rate yields zero tax (1.6651ms)
+     rejects a non-positive or fractional quantity (0.3261ms)
+   money.computeLine (AC-CART-02 fixture) (2.609ms)
+  b% money.summarize
+     grand_total = subtotal + tax_total to the cent across multiple lines (0.5016ms)
+     strips internal cent bookkeeping from the exposed lines (0.2876ms)
+     empty cart totals are exact zeros (1.3084ms)
+   money.summarize (2.3ms)
+  b% addCartItemSchema
+     parses a positive product id and defaults quantity to 1 (3.0996ms)
+     accepts a numeric string quantity and coerces it to an int (0.3281ms)
+     rejects quantity < 1, zero, negative and fractional (1.0243ms)
+     rejects a quantity above the documented per-line maximum (0.2522ms)
+     rejects a non-positive or non-numeric product id (0.578ms)
+     is strict    a client-supplied owner (customer_id/cart_id/role) is rejected (0.6801ms)
+     rejects a missing product id (0.3052ms)
+   addCartItemSchema (6.7187ms)
+  b% updateCartItemSchema
+     requires an absolute positive quantity (1.0678ms)
+   updateCartItemSchema (1.1891ms)
+  b% cartItemIdParamSchema
+     parses a positive integer id and rejects junk (0.7992ms)
+   cartItemIdParamSchema (0.9092ms)
+  b% Catalog & inventory over HTTP (isolated test DB)
+     GET /api/products is public and returns active products + meta (272.6045ms)
+     listing supports search, sorting by price, and pagination (133.4685ms)
+     listing rejects invalid query parameters with 400 (16.5775ms)
+     GET /api/products/:id hides inactive from the public but not from admin (38.2099ms)
+     POST /api/products: admin 201, unique SKU enforced, atomic inventory row (44.7236ms)
+     POST /api/products: invalid body 400 without creating a row (8.8918ms)
+     POST /api/products: anonymous 401, customer/agent 403 (customers cannot modify) (18.1076ms)
+     PATCH /api/products/:id: admin edits + deactivates; others forbidden; 404/400 handled (116.7087ms)
+     PATCH /api/products/:id: SKU collision    409 (103.5003ms)
+     GET /api/inventory is staff-only (admin/agent 200, customer 403, anon 401) (26.4366ms)
+     GET /api/inventory/low-stock returns only available <= threshold (125.8972ms)
+     PATCH /api/inventory/:id adjusts stock, writes a movement + audit row (77.786ms)
+     PATCH /api/inventory/:id guards negative stock and rolls back the transaction (57.8374ms)
+     PATCH /api/inventory/:id: role + input + existence checks (94.5658ms)
+     product responses never leak internal columns (45.7335ms)
+   Catalog & inventory over HTTP (isolated test DB) (1276.8402ms)
+  b% createProductSchema
+     applies safe defaults and normalizes money (5.0992ms)
+     accepts a JSON number price and trims strings (0.3087ms)
+     rejects blank name, blank sku, negative/zero price and >2-decimal price (1.039ms)
+     rejects tax_rate outside 0..100 (0.303ms)
+     rejects negative initial_stock / threshold (0.5407ms)
+     STRICT: unknown fields (e.g. role, is_admin) are rejected (0.4139ms)
+   createProductSchema (9.1936ms)
+  b% updateProductSchema
+     a single field patch is valid (1.8564ms)
+     an empty patch fails (nothing to update) (0.1637ms)
+     STRICT: unknown fields rejected (0.1844ms)
+     booleans coerce from string query-ish values (0.1528ms)
+   updateProductSchema (2.5084ms)
+  b% productListQuerySchema
+     defaults (0.8381ms)
+     coerces numeric + boolish query-string params (0.1554ms)
+     invalid sort column, order, and out-of-range pagination fail closed (0.5313ms)
+     sort keys stay aligned with the repository whitelist (0.1129ms)
+   productListQuerySchema (1.7955ms)
+  b% productIdParamSchema
+     parses a positive integer id (0.2982ms)
+     rejects non-numeric / zero / negative ids (0.223ms)
+   productIdParamSchema (0.6077ms)
+  b% inventoryListQuerySchema
+     defaults (staff view shows both active + inactive, all stock) (0.4411ms)
+   inventoryListQuerySchema (0.5028ms)
+  b% updateInventorySchema
+     valid signed delta + reason (0.4391ms)
+     zero delta rejected (0.2181ms)
+     non-integer delta rejected (0.1621ms)
+     missing/blank reason rejected (0.2942ms)
+     STRICT: unknown fields rejected (0.1535ms)
+   updateInventorySchema (1.4071ms)
+  b% PostgreSQL integration (DATABASE_URL_TEST)
+     connectivity: pool reaches the server and reports health "up" (6.6538ms)
+     migrations produced the complete schema (13 tables) (7.1019ms)
+     passwords are stored as hashes; column is NOT NULL (3.381ms)
+     foreign keys reject orphan rows (22.6514ms)
+     RESTRICT FKs prevent deleting records referenced by orders/history (78.7732ms)
+     unique constraints: email, SKU, cart-per-customer, idempotency key (61.3483ms)
+     cart_items: UNIQUE(cart_id, product_id) enforces upsert semantics (121.73ms)
+     quantity CHECK constraints reject invalid numbers (77.5888ms)
+     available_quantity is a GENERATED column (direct writes rejected) (40.8404ms)
+     price/money CHECK constraints and NUMERIC(12,2) bounds (29.8419ms)
+     financial totals: order/invoice invariants enforced by CHECKs (89.8147ms)
+     enum-like CHECKs reject invalid role/status/type values (61.3118ms)
+     order_items snapshots are immune to later catalog edits (D-07) (18.2629ms)
+     transaction consistency: rollback leaves neither order nor audit row (11.2753ms)
+     reservation flow in one committed transaction updates stock atomically (23.5096ms)
+     overselling is rejected by DB CHECK even if the app misbehaves (9.0499ms)
+     audit_logs is append-only at the DB level (UPDATE/DELETE blocked) (32.0866ms)
+     audit_logs.outcome stores success/failure and rejects anything else (migration 18) (26.5668ms)
+     invoice counter claims sequential numbers under upsert (D-10) (17.4267ms)
+     idempotency claim row supports replay (D-08) (27.6059ms)
+   PostgreSQL integration (DATABASE_URL_TEST) (832.4613ms)
+  b% Migration reversibility (down --all, then up again)
+     down --all removes every table; up restores the identical schema (1046.8532ms)
+   Migration reversibility (down --all, then up again) (1047.0884ms)
+  b% Invoices over HTTP (isolated test DB)
+     invoice reads require authentication (anon 401) (34.6616ms)
+     no invoice exists until the order ships, then it appears atomically (154.1786ms)
+     consecutive shipped orders get strictly increasing yearly numbers (176.0371ms)
+     a second invoice for the same order is rejected by the UNIQUE constraint (97.9483ms)
+     customers see only their own invoices; staff see all (160.879ms)
+     admin voids an invoice (row preserved) and a re-void is refused; customer cannot void (137.2487ms)
+     a cancelled order has no invoice (96.8386ms)
+     invoice totals and lines are immune to later catalog price edits (125.6311ms)
+     unknown invoice id    404; malformed id / bad status filter    400 (18.7248ms)
+     void requires a meaningful reason (strict, 3  500 chars) (193.0588ms)
+   Invoices over HTTP (isolated test DB) (1275.3363ms)
+  b% Invoice numbering + status helpers (FR-INV-02 / D-25)
+     formatInvoiceNumber produces INV-YYYY-NNNNNN zero-padded to 6 digits (0.8367ms)
+     counterPeriodForYear keys the sequence by calendar year (0.1153ms)
+     only an issued invoice can be voided; voided is terminal (0.7993ms)
+     a demo notice + distributor block are always present (simulated business) (0.1944ms)
+   Invoice numbering + status helpers (FR-INV-02 / D-25) (3.0994ms)
+  b% Invoice Zod schemas are strict and tamper-proof (FR-INV-04)
+     invoiceListQuerySchema defaults paging and validates the status enum (3.8866ms)
+     invoiceIdParamSchema accepts positive ints and rejects junk / unknown keys (1.2309ms)
+     voidInvoiceSchema requires a 3  500 char reason and rejects injected money (0.7384ms)
+   Invoice Zod schemas are strict and tamper-proof (FR-INV-04) (6.0323ms)
+  b% Orders over HTTP (isolated test DB)
+     order creation is customer-only (anon 401, admin/agent 403) (52.7123ms)
+     missing Idempotency-Key    400; malformed key    400 (35.6435ms)
+     POST /api/orders places a cart order, reserves stock, empties the cart, audits (106.3163ms)
+     a client-sent price in the body is rejected (strict    400), stock untouched (31.3277ms)
+     invalid quantity and product_id are rejected with 400 (52.512ms)
+     ordering with an empty cart returns 422 EMPTY_CART (12.9597ms)
+     ordering an inactive product returns 404 and creates no order (43.2874ms)
+     a shortfall line aborts the whole order with 409 and changes no stock (61.6294ms)
+     the same key replays one order; a different body under the same key    409 (66.3438ms)
+     staggered parallel double-submit with one key creates a single order (191.6786ms)
+     20 concurrent buyers for 5 units: 5 succeed, 15 get 409, stock never negative (475.7788ms)
+     legal chain pending  confirmed  processing  shipped  delivered consumes at ship (110.7717ms)
+     invalid transitions are rejected with 409; terminal states have no edges (78.8852ms)
+     customers cannot update administrative order statuses (50.8524ms)
+     cancel releases the reservation once; re-cancel and post-ship cancel are refused (156.4517ms)
+     a customer cannot read or cancel another customer  s order (404, not 403) (64.5093ms)
+     customers list only their own orders; staff list all and can filter (188.8876ms)
+     order item snapshots are immune to later catalog price/name edits (61.1368ms)
+   Orders over HTTP (isolated test DB) (1929.0592ms)
+  b% Order lifecycle matrix (FR-ORD-07)
+     forward edges are exactly the one-step chain (0.7237ms)
+     no skipping, no backwards, terminals have no outgoing edge (1.0084ms)
+     cancellation is only legal pre-shipment (pending/confirmed) (0.4094ms)
+   Order lifecycle matrix (FR-ORD-07) (3.5333ms)
+  b% Order request normalization (idempotency matching)
+     mergeLines sums duplicate product ids and sorts by id (0.4525ms)
+     fingerprint is order-independent and stable (0.9789ms)
+   Order request normalization (idempotency matching) (1.6236ms)
+  b% Order Zod schemas are strict and price-agnostic
+     createOrderSchema accepts items[] and an empty body (cart order) (3.7616ms)
+     createOrderSchema rejects client prices, ids <= 0, bad quantities and unknown fields (2.2013ms)
+     updateOrderStatusSchema accepts lifecycle values only (1.046ms)
+     cancelOrderSchema requires a meaningful reason (1.0217ms)
+     orderListQuerySchema defaults paging and validates status enum (1.3632ms)
+   Order Zod schemas are strict and price-agnostic (9.7002ms)
+  b% Reports & dashboard over HTTP (isolated test DB)
+     access control: dashboard ADMIN-only, summary/low-stock staff-only, customer refused (105.8116ms)
+     the agent order-summary never carries the audit feed (22.2694ms)
+     aggregation accuracy on an isolated window (order value excludes cancelled, is not revenue) (176.2838ms)
+     low-stock report is paginated and every row is genuinely low (23.7872ms)
+     bad window params fail closed (400) (6.5804ms)
+   Reports & dashboard over HTTP (isolated test DB) (410.8554ms)
+  b% Security & edge cases over HTTP (isolated test DB)
+     malformed JSON bodies    400 INVALID_JSON (never 500, never a stack) (36.5517ms)
+     valid JSON of the wrong shape (array)    400 VALIDATION_ERROR (15.6555ms)
+     oversized bodies    413 PAYLOAD_TOO_LARGE under the configured limit (6.3699ms)
+     non-numeric / non-positive / fractional ids    400; unknown ids    404 (61.592ms)
+     anonymous requests to protected endpoints    401 UNAUTHENTICATED (42.5232ms)
+     garbage bearer tokens    401, never 500 (16.6373ms)
+     role gates: customer/agent/admin each see exactly their API surface (66.0859ms)
+     extra/mutable fields (role, price, status, customer_id) are rejected, not ignored-into-DB (44.5995ms)
+     customer B cannot read or mutate anything owned by customer A (404, no existence leak) (220.1844ms)
+     illegal transitions rejected with 409; cancel is a separate operation (173.095ms)
+     over-request    409 INSUFFICIENT_STOCK with zero side effects (35.7049ms)
+     multi-line order with one unknown product rolls back completely (no orphan order/stock) (32.4303ms)
+     parallel orders against limited stock never oversell (exactly one wins) (142.7806ms)
+     same Idempotency-Key replays the stored response; different body conflicts (60.6484ms)
+     concurrent duplicate ship consumes stock exactly once and mints one invoice (120.0941ms)
+     concurrent duplicate cancel releases stock exactly once (76.9031ms)
+     registration is rate limited in an enforced bucket (429 RATE_LIMITED) (2052.2195ms)
+     CHECK constraints make an application-level oversell physically impossible (153.9187ms)
+     audit trail is append-only at the DATABASE level (10.8063ms)
+     illegal order status values cannot be written even via direct SQL (158.4597ms)
+     every failure uses the single { error: { code, message } } envelope (78.5523ms)
+   Security & edge cases over HTTP (isolated test DB) (3690.6858ms)
+  b% logger.redact (FR-AUD-05 / NFR-01 secret hygiene)
+     redacts secret-looking keys at any depth (0.8517ms)
+     passes through primitives safely (0.1344ms)
+   logger.redact (FR-AUD-05 / NFR-01 secret hygiene) (2.6633ms)
+  b% ApiError
+     factories produce stable codes and statuses (0.2237ms)
+   ApiError (0.2917ms)
+  b% Administrative user management over HTTP (isolated test DB)
+     the directory is ADMIN-only (52.9385ms)
+     an admin role change is applied and audited transactionally (51.845ms)
+     self-lockout: an admin cannot demote or deactivate their own account (15.6275ms)
+     deactivating an account blocks its next login (audited as a failure) (1228.5457ms)
+     strict PATCH: unknown fields and no-op bodies are rejected; unknown id 404s (29.374ms)
+   Administrative user management over HTTP (isolated test DB) (1461.6544ms)
+  c% tests 228
+  c% suites 39
+  c% pass 228
+  c% fail 0
+  c% cancelled 0
+  c% skipped 0
+  c% todo 0
+  c% duration_ms 38275.0227
+  c% start of coverage report
+  c% ------------------------------------------------------------------------------------------------------------------------------
+  c% file                                                    | line % | branch % | funcs % | uncovered lines
+  c% ------------------------------------------------------------------------------------------------------------------------------
+  c% migrations                                              |        |          |         | 
+  c%  1735689600001_create-users.js                          | 100.00 |   100.00 |  100.00 | 
+  c%  1735689600002_create-products.js                       | 100.00 |   100.00 |  100.00 | 
+  c%  1735689600003_create-inventory.js                      | 100.00 |   100.00 |  100.00 | 
+  c%  1735689600004_create-carts.js                          | 100.00 |   100.00 |  100.00 | 
+  c%  1735689600005_create-cart-items.js                     | 100.00 |   100.00 |  100.00 | 
+  c%  1735689600006_create-orders.js                         | 100.00 |   100.00 |  100.00 | 
+  c%  1735689600007_create-order-items.js                    | 100.00 |   100.00 |  100.00 | 
+  c%  1735689600008_create-invoices.js                       | 100.00 |   100.00 |  100.00 | 
+  c%  1735689600009_create-invoice-counters.js               | 100.00 |   100.00 |  100.00 | 
+  c%  1735689600010_create-inventory-movements.js            | 100.00 |   100.00 |  100.00 | 
+  c%  1735689600011_create-audit-logs.js                     | 100.00 |   100.00 |  100.00 | 
+  c%  1735689600012_create-idempotency-keys.js               | 100.00 |   100.00 |  100.00 | 
+  c%  1735689600013_create-refresh-tokens.js                 | 100.00 |   100.00 |  100.00 | 
+  c%  1735689600014_add-inventory-low-stock-threshold.js     | 100.00 |   100.00 |  100.00 | 
+  c%  1735689600015_create-cart-item-qty-max.js              | 100.00 |   100.00 |  100.00 | 
+  c%  1735689600016_order-lifecycle-and-idempotency-hash.js  | 100.00 |   100.00 |  100.00 | 
+  c%  1735689600017_invoice-status-and-numbering.js          | 100.00 |   100.00 |  100.00 | 
+  c%  1735689600018_audit-outcome-and-created-index.js       | 100.00 |   100.00 |  100.00 | 
+  c% src                                                     |        |          |         | 
+  c%  app.js                                                 |  95.95 |    50.00 |   75.00 | 61-62 68
+  c%  config                                                 |        |          |         | 
+  c%   env.js                                                |  79.69 |    42.42 |  100.00 | 29-30 43-44 103-107 109-113 115-126
+  c%  constants                                              |        |          |         | 
+  c%   audit.js                                              | 100.00 |   100.00 |  100.00 | 
+  c%   cart.js                                               | 100.00 |   100.00 |  100.00 | 
+  c%   invoices.js                                           | 100.00 |   100.00 |  100.00 | 
+  c%   orders.js                                             | 100.00 |   100.00 |  100.00 | 
+  c%   roles.js                                              | 100.00 |   100.00 |  100.00 | 
+  c%  controllers                                            |        |          |         | 
+  c%   audit.controller.js                                   | 100.00 |   100.00 |  100.00 | 
+  c%   auth.controller.js                                    | 100.00 |    85.71 |  100.00 | 
+  c%   cart.controller.js                                    | 100.00 |   100.00 |  100.00 | 
+  c%   health.controller.js                                  |  90.00 |    66.67 |  100.00 | 16-17
+  c%   inventory.controller.js                               | 100.00 |   100.00 |  100.00 | 
+  c%   invoice.controller.js                                 | 100.00 |   100.00 |  100.00 | 
+  c%   order.controller.js                                   | 100.00 |    94.74 |  100.00 | 
+  c%   product.controller.js                                 | 100.00 |   100.00 |  100.00 | 
+  c%   report.controller.js                                  | 100.00 |   100.00 |  100.00 | 
+  c%   user.controller.js                                    |  96.43 |   100.00 |   66.67 | 20
+  c%  db                                                     |        |          |         | 
+  c%   pool.js                                               |  90.15 |    72.22 |   88.89 | 36-41 51-53 91-92 110-111
+  c%  middleware                                             |        |          |         | 
+  c%   asyncHandler.js                                       | 100.00 |   100.00 |  100.00 | 
+  c%   authenticate.js                                       |  94.51 |    92.31 |   75.00 | 64-66 86-87
+  c%   authorize.js                                          | 100.00 |    95.65 |  100.00 | 
+  c%   errorHandler.js                                       |  87.04 |    83.33 |  100.00 | 31-37
+  c%   notFound.js                                           | 100.00 |   100.00 |  100.00 | 
+  c%   rateLimit.js                                          | 100.00 |   100.00 |  100.00 | 
+  c%   requestLogger.js                                      |  43.48 |   100.00 |    0.00 | 9-21
+  c%  repositories                                           |        |          |         | 
+  c%   audit.repository.js                                   | 100.00 |    83.33 |  100.00 | 
+  c%   cart.repository.js                                    | 100.00 |    90.48 |  100.00 | 
+  c%   inventory.repository.js                               |  97.35 |    78.95 |  100.00 | 111-114
+  c%   invoice.repository.js                                 |  98.44 |    82.14 |  100.00 | 166-168
+  c%   order.repository.js                                   |  95.10 |    97.73 |   90.91 | 67-74 286-294
+  c%   product.repository.js                                 |  95.40 |    80.00 |   88.89 | 115-122
+  c%   refreshToken.repository.js                            |  82.98 |    83.33 |   66.67 | 63-69 77-85
+  c%   report.repository.js                                  |  96.59 |    75.00 |  100.00 | 31-33
+  c%   user.repository.js                                    |  86.21 |    71.43 |   75.00 | 28-36 38-41 65-67
+  c%  routes                                                 |        |          |         | 
+  c%   audit.routes.js                                       | 100.00 |   100.00 |  100.00 | 
+  c%   auth.routes.js                                        | 100.00 |   100.00 |  100.00 | 
+  c%   cart.routes.js                                        | 100.00 |   100.00 |  100.00 | 
+  c%   health.routes.js                                      | 100.00 |   100.00 |  100.00 | 
+  c%   index.js                                              | 100.00 |   100.00 |  100.00 | 
+  c%   inventory.routes.js                                   | 100.00 |   100.00 |  100.00 | 
+  c%   invoice.routes.js                                     | 100.00 |   100.00 |  100.00 | 
+  c%   order.routes.js                                       | 100.00 |   100.00 |  100.00 | 
+  c%   product.routes.js                                     | 100.00 |   100.00 |  100.00 | 
+  c%   report.routes.js                                      | 100.00 |   100.00 |  100.00 | 
+  c%   user.routes.js                                        | 100.00 |   100.00 |  100.00 | 
+  c%  services                                               |        |          |         | 
+  c%   audit.service.js                                      | 100.00 |    86.67 |  100.00 | 
+  c%   auth.service.js                                       |  94.30 |    88.89 |   90.91 | 30-31 193-194 209-210 214-217 240-244
+  c%   cart.service.js                                       |  92.76 |    90.63 |  100.00 | 110-115 157-160 162-167
+  c%   health.service.js                                     | 100.00 |    40.00 |  100.00 | 
+  c%   inventory.service.js                                  |  95.90 |    86.96 |  100.00 | 102-106
+  c%   invoice.service.js                                    |  96.10 |    82.14 |  100.00 | 98-101 179-182
+  c%   order.service.js                                      |  95.95 |    91.36 |   85.19 | 204-209 242-246 278 394-399
+  c%   product.service.js                                    |  98.68 |    84.21 |  100.00 | 127-128
+  c%   report.service.js                                     | 100.00 |    90.00 |  100.00 | 
+  c%   token.service.js                                      |  91.74 |   100.00 |   88.89 | 100-109
+  c%   user.service.js                                       |  94.59 |    88.89 |   75.00 | 42-47
+  c%  utils                                                  |        |          |         | 
+  c%   errors.js                                             |  90.70 |    87.50 |   71.43 | 27-28 31-32
+  c%   logger.js                                             |  78.26 |   100.00 |   20.00 | 28-37
+  c%   money.js                                              |  98.31 |    81.25 |  100.00 | 75-76
+  c%   validators.js                                         | 100.00 |    97.06 |  100.00 | 
+  c% ------------------------------------------------------------------------------------------------------------------------------
+  c% all files                                               |  96.34 |    87.57 |   92.63 | 
+  c% ------------------------------------------------------------------------------------------------------------------------------
+  c% end of coverage report
+EXITCODE=0

@@ -1,0 +1,343 @@
+﻿# schema state, persistence across a full stop, and backup/restore round-trip
+# local 2026-10-23 19:25:21 +05:30 | utc 2026-10-23T13:55:21Z
+# Docker version 29.9.1, build dfc520d | Docker Compose version v5.6.0 | node v24.17.0
+
+=== docker exec b2b_p13_final-db-1 psql -U b2b -d b2b_oms -f /tmp/check.sql ===
+PS> docker exec b2b_p13_final-db-1 psql -U b2b -d b2b_oms -f /tmp/check.sql
+ users | products | inventory | orders | applied_migrations | public_tables 
+-------+----------+-----------+--------+--------------------+---------------
+     4 |        6 |         6 |      0 |                 18 |            14
+(1 row)
+
+exit code: 0
+
+=== docker compose -p b2b_p13_final --env-file .env.p13-clean down  (NO -v: containers removed, data kept) ===
+PS> docker compose -p b2b_p13_final --env-file .env.p13-clean down  (NO -v: containers removed, data kept)
+ Container b2b_p13_final-frontend-1 Stopping 
+ Container b2b_p13_final-frontend-1 Stopped 
+ Container b2b_p13_final-frontend-1 Removing 
+ Container b2b_p13_final-frontend-1 Removed 
+ Container b2b_p13_final-backend-1 Stopping 
+ Container b2b_p13_final-backend-1 Stopped 
+ Container b2b_p13_final-backend-1 Removing 
+ Container b2b_p13_final-backend-1 Removed 
+ Container b2b_p13_final-migrate-1 Stopping 
+ Container b2b_p13_final-migrate-1 Stopped 
+ Container b2b_p13_final-migrate-1 Removing 
+ Container b2b_p13_final-migrate-1 Removed 
+ Container b2b_p13_final-db-1 Stopping 
+ Container b2b_p13_final-db-1 Stopped 
+ Container b2b_p13_final-db-1 Removing 
+ Container b2b_p13_final-db-1 Removed 
+ Network b2b_p13_final_default Removing 
+ Network b2b_p13_final_default Removed 
+exit code: 0
+
+=== docker volume ls --filter name=b2b_p13_final ===
+PS> docker volume ls --filter name=b2b_p13_final
+DRIVER    VOLUME NAME
+local     b2b_p13_final_pgdata
+exit code: 0
+
+=== docker compose -p b2b_p13_final --env-file .env.p13-clean up -d  (restart from the same volume) ===
+PS> docker compose -p b2b_p13_final --env-file .env.p13-clean up -d  (restart from the same volume)
+ Network b2b_p13_final_default Creating 
+ Network b2b_p13_final_default Creating 
+ Network b2b_p13_final_default Created 
+ Network b2b_p13_final_default Created 
+ Container b2b_p13_final-db-1 Creating 
+ Container b2b_p13_final-db-1 Created 
+ Container b2b_p13_final-migrate-1 Creating 
+ Container b2b_p13_final-migrate-1 Created 
+ Container b2b_p13_final-backend-1 Creating 
+ Container b2b_p13_final-backend-1 Created 
+ Container b2b_p13_final-frontend-1 Creating 
+ Container b2b_p13_final-frontend-1 Created 
+ Container b2b_p13_final-db-1 Starting 
+ Container b2b_p13_final-db-1 Started 
+ Container b2b_p13_final-db-1 Waiting 
+ Container b2b_p13_final-db-1 Healthy 
+ Container b2b_p13_final-migrate-1 Starting 
+ Container b2b_p13_final-migrate-1 Started 
+ Container b2b_p13_final-db-1 Waiting 
+ Container b2b_p13_final-migrate-1 Waiting 
+ Container b2b_p13_final-migrate-1 Exited 
+ Container b2b_p13_final-db-1 Healthy 
+ Container b2b_p13_final-backend-1 Starting 
+ Container b2b_p13_final-backend-1 Started 
+ Container b2b_p13_final-backend-1 Waiting 
+ Container b2b_p13_final-backend-1 Healthy 
+ Container b2b_p13_final-frontend-1 Starting 
+ Container b2b_p13_final-frontend-1 Started 
+exit code: 0
+
+=== docker exec b2b_p13_final-db-1 psql -U b2b -d b2b_oms -f /tmp/check.sql ===
+PS> docker exec b2b_p13_final-db-1 psql -U b2b -d b2b_oms -f /tmp/check.sql
+docker.exe : psql: error: /tmp/check.sql: No such file or directory
+At E:\Users\sudhe\B2B Order Management Platform\.p13-capture2.ps1:21 char:3
++   & docker @argv 2>&1 | Out-File -Encoding utf8 -Append $out
++   ~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (psql: error: /t...le or directory 
+   :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+exit code: 1
+
+=== docker exec b2b_p13_final-db-1 sh -c pg_dump -U b2b -d b2b_oms --format=custom --file=/tmp/b2b_oms.dump ===
+PS> docker exec b2b_p13_final-db-1 sh -c pg_dump -U b2b -d b2b_oms --format=custom --file=/tmp/b2b_oms.dump
+exit code: 0
+
+=== docker exec b2b_p13_final-db-1 ls -l /tmp/b2b_oms.dump ===
+PS> docker exec b2b_p13_final-db-1 ls -l /tmp/b2b_oms.dump
+-rw-r--r--    1 root     root         48783 Oct 23 13:55 /tmp/b2b_oms.dump
+exit code: 0
+
+=== backup: copy the archive to the host ===
+PS> backup: copy the archive to the host
+exit code: 0
+
+=== backup: host digest ===
+PS> backup: host digest
+SHA256 hash of backups\b2b_oms_final.dump:
+37dd8b8e803df4c9a09f34cd372701cb095bcb93261119f571a2fdce8855e2f6
+CertUtil: -hashfile command completed successfully.
+exit code: 0
+
+=== docker exec b2b_p13_final-db-1 pg_restore -l /tmp/b2b_oms.dump ===
+PS> docker exec b2b_p13_final-db-1 pg_restore -l /tmp/b2b_oms.dump
+;
+; Archive created at 2026-10-23 13:55:38 UTC
+;     dbname: b2b_oms
+;     TOC Entries: 135
+;     Compression: gzip
+;     Dump Version: 1.15-0
+;     Format: CUSTOM
+;     Integer: 4 bytes
+;     Offset: 8 bytes
+;     Dumped from database version: 16.15
+;     Dumped by pg_dump version: 16.15
+;
+;
+; Selected TOC Entries:
+;
+241; 1255 16626 FUNCTION public audit_append_only() b2b
+236; 1259 16606 TABLE public audit_logs b2b
+235; 1259 16605 SEQUENCE public audit_logs_id_seq b2b
+3702; 0 0 SEQUENCE OWNED BY public audit_logs_id_seq b2b
+225; 1259 16468 TABLE public cart_items b2b
+224; 1259 16467 SEQUENCE public cart_items_id_seq b2b
+3703; 0 0 SEQUENCE OWNED BY public cart_items_id_seq b2b
+223; 1259 16452 TABLE public carts b2b
+222; 1259 16451 SEQUENCE public carts_id_seq b2b
+3704; 0 0 SEQUENCE OWNED BY public carts_id_seq b2b
+238; 1259 16629 TABLE public idempotency_keys b2b
+237; 1259 16628 SEQUENCE public idempotency_keys_id_seq b2b
+3705; 0 0 SEQUENCE OWNED BY public idempotency_keys_id_seq b2b
+221; 1259 16430 TABLE public inventory b2b
+234; 1259 16578 TABLE public inventory_movements b2b
+233; 1259 16577 SEQUENCE public inventory_movements_id_seq b2b
+3706; 0 0 SEQUENCE OWNED BY public inventory_movements_id_seq b2b
+232; 1259 16569 TABLE public invoice_counters b2b
+231; 1259 16543 TABLE public invoices b2b
+230; 1259 16542 SEQUENCE public invoices_id_seq b2b
+3707; 0 0 SEQUENCE OWNED BY public invoices_id_seq b2b
+229; 1259 16517 TABLE public order_items b2b
+228; 1259 16516 SEQUENCE public order_items_id_seq b2b
+3708; 0 0 SEQUENCE OWNED BY public order_items_id_seq b2b
+227; 1259 16491 TABLE public orders b2b
+226; 1259 16490 SEQUENCE public orders_id_seq b2b
+3709; 0 0 SEQUENCE OWNED BY public orders_id_seq b2b
+216; 1259 16386 TABLE public pgmigrations b2b
+215; 1259 16385 SEQUENCE public pgmigrations_id_seq b2b
+3710; 0 0 SEQUENCE OWNED BY public pgmigrations_id_seq b2b
+220; 1259 16410 TABLE public products b2b
+219; 1259 16409 SEQUENCE public products_id_seq b2b
+3711; 0 0 SEQUENCE OWNED BY public products_id_seq b2b
+240; 1259 16650 TABLE public refresh_tokens b2b
+239; 1259 16649 SEQUENCE public refresh_tokens_id_seq b2b
+3712; 0 0 SEQUENCE OWNED BY public refresh_tokens_id_seq b2b
+218; 1259 16393 TABLE public users b2b
+217; 1259 16392 SEQUENCE public users_id_seq b2b
+3713; 0 0 SEQUENCE OWNED BY public users_id_seq b2b
+3405; 2604 16609 DEFAULT public audit_logs id b2b
+3384; 2604 16471 DEFAULT public cart_items id b2b
+3381; 2604 16455 DEFAULT public carts id b2b
+3409; 2604 16632 DEFAULT public idempotency_keys id b2b
+3402; 2604 16581 DEFAULT public inventory_movements id b2b
+3397; 2604 16546 DEFAULT public invoices id b2b
+3395; 2604 16520 DEFAULT public order_items id b2b
+3388; 2604 16494 DEFAULT public orders id b2b
+3365; 2604 16389 DEFAULT public pgmigrations id b2b
+3370; 2604 16413 DEFAULT public products id b2b
+3412; 2604 16653 DEFAULT public refresh_tokens id b2b
+3366; 2604 16396 DEFAULT public users id b2b
+3691; 0 16606 TABLE DATA public audit_logs b2b
+3680; 0 16468 TABLE DATA public cart_items b2b
+3678; 0 16452 TABLE DATA public carts b2b
+3693; 0 16629 TABLE DATA public idempotency_keys b2b
+3676; 0 16430 TABLE DATA public inventory b2b
+3689; 0 16578 TABLE DATA public inventory_movements b2b
+3687; 0 16569 TABLE DATA public invoice_counters b2b
+3686; 0 16543 TABLE DATA public invoices b2b
+3684; 0 16517 TABLE DATA public order_items b2b
+3682; 0 16491 TABLE DATA public orders b2b
+3671; 0 16386 TABLE DATA public pgmigrations b2b
+3675; 0 16410 TABLE DATA public products b2b
+3695; 0 16650 TABLE DATA public refresh_tokens b2b
+3673; 0 16393 TABLE DATA public users b2b
+3714; 0 0 SEQUENCE SET public audit_logs_id_seq b2b
+3715; 0 0 SEQUENCE SET public cart_items_id_seq b2b
+3716; 0 0 SEQUENCE SET public carts_id_seq b2b
+3717; 0 0 SEQUENCE SET public idempotency_keys_id_seq b2b
+3718; 0 0 SEQUENCE SET public inventory_movements_id_seq b2b
+3719; 0 0 SEQUENCE SET public invoices_id_seq b2b
+3720; 0 0 SEQUENCE SET public order_items_id_seq b2b
+3721; 0 0 SEQUENCE SET public orders_id_seq b2b
+3722; 0 0 SEQUENCE SET public pgmigrations_id_seq b2b
+3723; 0 0 SEQUENCE SET public products_id_seq b2b
+3724; 0 0 SEQUENCE SET public refresh_tokens_id_seq b2b
+3725; 0 0 SEQUENCE SET public users_id_seq b2b
+3498; 2606 16615 CONSTRAINT public audit_logs audit_logs_pkey b2b
+3468; 2606 16488 CONSTRAINT public cart_items cart_items_cart_product_uq b2b
+3470; 2606 16476 CONSTRAINT public cart_items cart_items_pkey b2b
+3464; 2606 16466 CONSTRAINT public carts carts_customer_uq b2b
+3466; 2606 16459 CONSTRAINT public carts carts_pkey b2b
+3501; 2606 16638 CONSTRAINT public idempotency_keys idempotency_keys_pkey b2b
+3503; 2606 16645 CONSTRAINT public idempotency_keys idempotency_user_key_uq b2b
+3490; 2606 16585 CONSTRAINT public inventory_movements inventory_movements_pkey b2b
+3462; 2606 16437 CONSTRAINT public inventory inventory_pkey b2b
+3488; 2606 16574 CONSTRAINT public invoice_counters invoice_counters_pkey b2b
+3482; 2606 16564 CONSTRAINT public invoices invoices_number_uq b2b
+3484; 2606 16562 CONSTRAINT public invoices invoices_order_uq b2b
+3486; 2606 16550 CONSTRAINT public invoices invoices_pkey b2b
+3476; 2606 16535 CONSTRAINT public order_items order_items_order_product_uq b2b
+3478; 2606 16523 CONSTRAINT public order_items order_items_pkey b2b
+3473; 2606 16504 CONSTRAINT public orders orders_pkey b2b
+3451; 2606 16391 CONSTRAINT public pgmigrations pgmigrations_pkey b2b
+3458; 2606 16422 CONSTRAINT public products products_pkey b2b
+3460; 2606 16424 CONSTRAINT public products products_sku_uq b2b
+3507; 2606 16663 CONSTRAINT public refresh_tokens refresh_tokens_hash_uq b2b
+3509; 2606 16656 CONSTRAINT public refresh_tokens refresh_tokens_pkey b2b
+3453; 2606 16405 CONSTRAINT public users users_email_uq b2b
+3455; 2606 16403 CONSTRAINT public users users_pkey b2b
+3493; 1259 16625 INDEX public audit_action_idx b2b
+3494; 1259 16624 INDEX public audit_actor_idx b2b
+3495; 1259 16679 INDEX public audit_created_idx b2b
+3496; 1259 16623 INDEX public audit_entity_idx b2b
+3499; 1259 16648 INDEX public idempotency_expires_idx b2b
+3480; 1259 16568 INDEX public invoices_issued_date_idx b2b
+3491; 1259 16604 INDEX public movements_order_idx b2b
+3492; 1259 16603 INDEX public movements_product_idx b2b
+3479; 1259 16541 INDEX public order_items_product_idx b2b
+3471; 1259 16514 INDEX public orders_customer_created_idx b2b
+3474; 1259 16515 INDEX public orders_status_idx b2b
+3456; 1259 16429 INDEX public products_name_idx b2b
+3504; 1259 16667 INDEX public refresh_tokens_expires_at_index b2b
+3505; 1259 16665 INDEX public refresh_tokens_family_id_index b2b
+3510; 1259 16666 INDEX public refresh_tokens_user_id_index b2b
+3526; 2620 16627 TRIGGER public audit_logs audit_logs_append_only b2b
+3523; 2606 16616 FK CONSTRAINT public audit_logs audit_actor_fk b2b
+3513; 2606 16477 FK CONSTRAINT public cart_items cart_items_cart_fk b2b
+3514; 2606 16482 FK CONSTRAINT public cart_items cart_items_product_fk b2b
+3512; 2606 16460 FK CONSTRAINT public carts carts_customer_fk b2b
+3524; 2606 16639 FK CONSTRAINT public idempotency_keys idempotency_user_fk b2b
+3511; 2606 16443 FK CONSTRAINT public inventory inventory_product_fk b2b
+3518; 2606 16556 FK CONSTRAINT public invoices invoices_issued_by_fk b2b
+3519; 2606 16551 FK CONSTRAINT public invoices invoices_order_fk b2b
+3520; 2606 16596 FK CONSTRAINT public inventory_movements movements_order_fk b2b
+3521; 2606 16591 FK CONSTRAINT public inventory_movements movements_performed_by_fk b2b
+3522; 2606 16586 FK CONSTRAINT public inventory_movements movements_product_fk b2b
+3516; 2606 16524 FK CONSTRAINT public order_items order_items_order_fk b2b
+3517; 2606 16529 FK CONSTRAINT public order_items order_items_product_fk b2b
+3515; 2606 16505 FK CONSTRAINT public orders orders_customer_fk b2b
+3525; 2606 16657 FK CONSTRAINT public refresh_tokens refresh_tokens_user_id_fkey b2b
+exit code: 0
+
+=== docker exec b2b_p13_final-db-1 createdb -U b2b b2b_oms_restore_check ===
+PS> docker exec b2b_p13_final-db-1 createdb -U b2b b2b_oms_restore_check
+exit code: 0
+
+=== docker exec b2b_p13_final-db-1 pg_restore -U b2b -d b2b_oms_restore_check --no-owner /tmp/b2b_oms.dump ===
+PS> docker exec b2b_p13_final-db-1 pg_restore -U b2b -d b2b_oms_restore_check --no-owner /tmp/b2b_oms.dump
+exit code: 0
+
+=== docker exec b2b_p13_final-db-1 psql -U b2b -d b2b_oms_restore_check -f /tmp/check.sql ===
+PS> docker exec b2b_p13_final-db-1 psql -U b2b -d b2b_oms_restore_check -f /tmp/check.sql
+ users | products | inventory | orders | applied_migrations | public_tables 
+-------+----------+-----------+--------+--------------------+---------------
+     4 |        6 |         6 |      0 |                 18 |            14
+(1 row)
+
+exit code: 0
+
+=== docker exec b2b_p13_final-db-1 dropdb -U b2b b2b_oms_restore_check ===
+PS> docker exec b2b_p13_final-db-1 dropdb -U b2b b2b_oms_restore_check
+exit code: 0
+
+=== docker exec b2b_p13_final-db-1 psql -U b2b -d postgres -c select datname from pg_database order by 1; ===
+PS> docker exec b2b_p13_final-db-1 psql -U b2b -d postgres -c select datname from pg_database order by 1;
+  datname  
+-----------
+ b2b_oms
+ postgres
+ template0
+ template1
+(4 rows)
+
+exit code: 0
+
+=== docker compose -p b2b_p13_final --env-file .env.p13-clean down  (final stop; volume preserved, nothing deleted) ===
+PS> docker compose -p b2b_p13_final --env-file .env.p13-clean down  (final stop; volume preserved, nothing deleted)
+ Container b2b_p13_final-frontend-1 Stopping 
+ Container b2b_p13_final-frontend-1 Stopped 
+ Container b2b_p13_final-frontend-1 Removing 
+ Container b2b_p13_final-frontend-1 Removed 
+ Container b2b_p13_final-backend-1 Stopping 
+ Container b2b_p13_final-backend-1 Stopped 
+ Container b2b_p13_final-backend-1 Removing 
+ Container b2b_p13_final-backend-1 Removed 
+ Container b2b_p13_final-migrate-1 Stopping 
+ Container b2b_p13_final-migrate-1 Stopped 
+ Container b2b_p13_final-migrate-1 Removing 
+ Container b2b_p13_final-migrate-1 Removed 
+ Container b2b_p13_final-db-1 Stopping 
+ Container b2b_p13_final-db-1 Stopped 
+ Container b2b_p13_final-db-1 Removing 
+ Container b2b_p13_final-db-1 Removed 
+ Network b2b_p13_final_default Removing 
+ Network b2b_p13_final_default Removed 
+exit code: 0
+
+=== RE-VERIFICATION: direct post-restart counts (wait for db healthy, check.sql re-copied) ===
+docker.exe :  Container b2b_p13_final-db-1 Starting 
+At E:\Users\sudhe\B2B Order Management Platform\.p13-reverify.ps1:13 char:2
++ (& docker compose -p b2b_p13_final --env-file .env.p13-clean up -d db ...
++  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ( Container b2b_p13_final-db-1 Sta 
+   rting :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+ Container b2b_p13_final-db-1 Started 
+up exit code: 0
+db healthy after wait: True
+ users | products | inventory | orders | applied_migrations | public_tables 
+-------+----------+-----------+--------+--------------------+---------------
+     4 |        6 |         6 |      0 |                 18 |            14
+(1 row)
+
+psql exit code: 0
+Must match pre-stop values (4 | 6 | 6 | 0 | 18 | 14) to prove data survived the full stop.
+docker.exe :  Container b2b_p13_final-db-1 Stopping 
+At E:\Users\sudhe\B2B Order Management Platform\.p13-reverify.ps1:26 char:2
++ (& docker compose -p b2b_p13_final --env-file .env.p13-clean down 2>& ...
++  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ( Container b2b_p13_final-db-1 Sto 
+   pping :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+ Container b2b_p13_final-db-1 Stopped 
+ Container b2b_p13_final-db-1 Removing 
+ Container b2b_p13_final-db-1 Removed 
+ Network b2b_p13_final_default Removing 
+ Network b2b_p13_final_default Removed 
+down complete (volume preserved, nothing deleted)

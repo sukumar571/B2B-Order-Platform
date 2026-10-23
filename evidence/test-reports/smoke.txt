@@ -1,0 +1,17 @@
+Backend runtime smoke test — 2026-10-21
+========================================
+
+Command sequence (PowerShell):
+  1. Start server:        node src/server.js   (cwd=backend, PORT=4000)
+  2. Health probe:        Invoke-RestMethod http://localhost:4000/api/health
+  3. Stop server process
+
+Observed response (actual):
+  {"status":"ok","uptimeSeconds":2,"timestamp":"2026-10-21T16:51:13.977Z"}
+
+Result: PASS — Express app boots and serves GET /api/health with a JSON body.
+
+Note on graceful shutdown: the SIGINT/SIGTERM handlers in src/server.js are wired and
+reviewed but were not exercised in this run (the process was force-stopped). To verify
+manually, start `npm --prefix backend start`, then press Ctrl+C in that terminal and
+observe the "server.shutdown.initiated" / "server.shutdown.complete" log lines.

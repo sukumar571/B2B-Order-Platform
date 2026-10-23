@@ -1,0 +1,42 @@
+
+> b2b-oms-backend@0.1.0 test:integration
+> node scripts/db/run-integration-tests.js
+
+Applying migrations to the test databaseGÇª
+No migrations to run!
+Migrations up completed against postgres://***@localhost:5433/b2b_oms_test.
+Running database integration testsGÇª
+
+Gû¦ PostgreSQL integration (DATABASE_URL_TEST)
+  G£ö connectivity: pool reaches the server and reports health "up" (7.0129ms)
+  G£ö migrations produced the complete schema (12 tables) (8.1315ms)
+  G£ö passwords are stored as hashes; column is NOT NULL (4.4431ms)
+  G£ö foreign keys reject orphan rows (27.0668ms)
+  G£ö RESTRICT FKs prevent deleting records referenced by orders/history (95.0795ms)
+  G£ö unique constraints: email, SKU, cart-per-customer, idempotency key (126.0337ms)
+  G£ö cart_items: UNIQUE(cart_id, product_id) enforces upsert semantics (49.7175ms)
+  G£ö quantity CHECK constraints reject invalid numbers (98.7927ms)
+  G£ö available_quantity is a GENERATED column (direct writes rejected) (47.0277ms)
+  G£ö price/money CHECK constraints and NUMERIC(12,2) bounds (47.8477ms)
+  G£ö financial totals: order/invoice invariants enforced by CHECKs (122.4981ms)
+  G£ö enum-like CHECKs reject invalid role/status/type values (96.9138ms)
+  G£ö order_items snapshots are immune to later catalog edits (D-07) (25.8713ms)
+  G£ö transaction consistency: rollback leaves neither order nor audit row (14.9626ms)
+  G£ö reservation flow in one committed transaction updates stock atomically (33.9792ms)
+  G£ö overselling is rejected by DB CHECK even if the app misbehaves (10.9595ms)
+  G£ö audit_logs is append-only at the DB level (UPDATE/DELETE blocked) (25.9026ms)
+  G£ö invoice counter claims sequential numbers under upsert (D-10) (24.5141ms)
+  G£ö idempotency claim row supports replay (D-08) (34.3051ms)
+G£ö PostgreSQL integration (DATABASE_URL_TEST) (967.6113ms)
+Gû¦ Migration reversibility (down --all, then up again)
+  G£ö down --all removes every table; up restores the identical schema (694.4127ms)
+G£ö Migration reversibility (down --all, then up again) (694.7294ms)
+Gä¦ tests 20
+Gä¦ suites 2
+Gä¦ pass 20
+Gä¦ fail 0
+Gä¦ cancelled 0
+Gä¦ skipped 0
+Gä¦ todo 0
+Gä¦ duration_ms 1968.5405
+

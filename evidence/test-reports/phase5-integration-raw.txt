@@ -1,0 +1,76 @@
+﻿
+> b2b-oms-backend@0.1.0 test:integration
+> node scripts/db/run-integration-tests.js
+
+Applying migrations to the test databaseΓÇª
+No migrations to run!
+Migrations up completed against postgres://***@localhost:5433/b2b_oms_test.
+Running database integration testsΓÇª
+
+Γû╢ Authentication over HTTP (isolated test DB)
+  Γ£ö POST /api/auth/register creates a CUSTOMER only, hashing the password (475.6162ms)
+  Γ£ö registration can NEVER select ADMIN or ORDER_MANAGER (25.4344ms)
+  Γ£ö duplicate emails are rejected with 409 EMAIL_TAKEN (case-insensitive) (645.5985ms)
+  Γ£ö invalid registration input yields 400 VALIDATION_ERROR without echoing secrets (5.6004ms)
+  Γ£ö POST /api/auth/login succeeds and sets a hardened HttpOnly cookie (762.029ms)
+  Γ£ö wrong password and unknown email return the identical safe 401 (998.585ms)
+  Γ£ö disabled accounts cannot log in (403 ACCOUNT_DISABLED) (682.1228ms)
+  Γ£ö refresh rotates the cookie; reusing a spent token kills the family (357.8064ms)
+  Γ£ö logout clears the cookie and revokes the family (340.7489ms)
+  Γ£ö garbage or missing refresh cookies fail safely with 401 (8.0142ms)
+  Γ£ö GET /api/auth/me returns the hash-free profile of the Bearer identity (439.6697ms)
+  Γ£ö missing, malformed, forged, expired, alg:none, and refresh-type bearer tokens all 401 (353.8492ms)
+  Γ£ö a disabled user is rejected even with a still-valid access token (340.1777ms)
+  Γ£ö role middleware: customer 403s admin routes, staff routes admit agent/admin (1011.7172ms)
+  Γ£ö users cannot reach another userΓÇÖs private data (self-scope + ownership) (755.017ms)
+  Γ£ö repeated wrong logins hit 429 RATE_LIMITED with envelope + headers (3580.3174ms)
+Γ£ö Authentication over HTTP (isolated test DB) (10939.3828ms)
+Γû╢ Catalog & inventory over HTTP (isolated test DB)
+  Γ£ö GET /api/products is public and returns active products + meta (314.4703ms)
+  Γ£ö listing supports search, sorting by price, and pagination (143.8719ms)
+  Γ£ö listing rejects invalid query parameters with 400 (20.8837ms)
+  Γ£ö GET /api/products/:id hides inactive from the public but not from admin (61.0172ms)
+  Γ£ö POST /api/products: admin 201, unique SKU enforced, atomic inventory row (35.4642ms)
+  Γ£ö POST /api/products: invalid body 400 without creating a row (10.9339ms)
+  Γ£ö POST /api/products: anonymous 401, customer/agent 403 (customers cannot modify) (16.5263ms)
+  Γ£ö PATCH /api/products/:id: admin edits + deactivates; others forbidden; 404/400 handled (240.2364ms)
+  Γ£ö PATCH /api/products/:id: SKU collision ΓåÆ 409 (107.789ms)
+  Γ£ö GET /api/inventory is staff-only (admin/agent 200, customer 403, anon 401) (50.7008ms)
+  Γ£ö GET /api/inventory/low-stock returns only available <= threshold (112.6311ms)
+  Γ£ö PATCH /api/inventory/:id adjusts stock, writes a movement + audit row (87.7901ms)
+  Γ£ö PATCH /api/inventory/:id guards negative stock and rolls back the transaction (61.7322ms)
+  Γ£ö PATCH /api/inventory/:id: role + input + existence checks (143.0008ms)
+  Γ£ö product responses never leak internal columns (17.9547ms)
+Γ£ö Catalog & inventory over HTTP (isolated test DB) (1522.8723ms)
+Γû╢ PostgreSQL integration (DATABASE_URL_TEST)
+  Γ£ö connectivity: pool reaches the server and reports health "up" (62.1056ms)
+  Γ£ö migrations produced the complete schema (13 tables) (10.3538ms)
+  Γ£ö passwords are stored as hashes; column is NOT NULL (4.1163ms)
+  Γ£ö foreign keys reject orphan rows (34.7765ms)
+  Γ£ö RESTRICT FKs prevent deleting records referenced by orders/history (126.6665ms)
+  Γ£ö unique constraints: email, SKU, cart-per-customer, idempotency key (154.7236ms)
+  Γ£ö cart_items: UNIQUE(cart_id, product_id) enforces upsert semantics (69.3171ms)
+  Γ£ö quantity CHECK constraints reject invalid numbers (221.3179ms)
+  Γ£ö available_quantity is a GENERATED column (direct writes rejected) (42.1782ms)
+  Γ£ö price/money CHECK constraints and NUMERIC(12,2) bounds (65.0528ms)
+  Γ£ö financial totals: order/invoice invariants enforced by CHECKs (145.0535ms)
+  Γ£ö enum-like CHECKs reject invalid role/status/type values (175.4881ms)
+  Γ£ö order_items snapshots are immune to later catalog edits (D-07) (60.8632ms)
+  Γ£ö transaction consistency: rollback leaves neither order nor audit row (18.2879ms)
+  Γ£ö reservation flow in one committed transaction updates stock atomically (37.1788ms)
+  Γ£ö overselling is rejected by DB CHECK even if the app misbehaves (22.8866ms)
+  Γ£ö audit_logs is append-only at the DB level (UPDATE/DELETE blocked) (57.5312ms)
+  Γ£ö invoice counter claims sequential numbers under upsert (D-10) (84.7316ms)
+  Γ£ö idempotency claim row supports replay (D-08) (59.9371ms)
+Γ£ö PostgreSQL integration (DATABASE_URL_TEST) (1524.7757ms)
+Γû╢ Migration reversibility (down --all, then up again)
+  Γ£ö down --all removes every table; up restores the identical schema (1117.7432ms)
+Γ£ö Migration reversibility (down --all, then up again) (1118.0297ms)
+Γä╣ tests 51
+Γä╣ suites 4
+Γä╣ pass 51
+Γä╣ fail 0
+Γä╣ cancelled 0
+Γä╣ skipped 0
+Γä╣ todo 0
+Γä╣ duration_ms 17681.1536

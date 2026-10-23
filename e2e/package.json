@@ -1,0 +1,22 @@
+{
+  "name": "b2b-oms-e2e",
+  "version": "1.0.0",
+  "private": true,
+  "description": "B2B Order Management Platform — Playwright end-to-end browser tests (Phase 12)",
+  "scripts": {
+    "test": "playwright test",
+    "test:journeys": "playwright test critical-journeys.spec.js",
+    "test:negative": "playwright test negative-paths.spec.js",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "bootstrap": "node scripts/bootstrap-standalone.js",
+    "report": "playwright show-report",
+    "install:browsers": "playwright install --with-deps chromium"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

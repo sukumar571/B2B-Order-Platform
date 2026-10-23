@@ -1,0 +1,148 @@
+# ---------------------------------------------------------------------------
+# Docker Compose — B2B Order Management Platform (Phase 13: reproducible
+# deployment).
+#
+# Topology:  db (PostgreSQL 16)  →  migrate (one-shot)  →  backend (Express)
+#            →  frontend (nginx serving the built SPA, proxies /api).
+#
+# Secrets are NEVER hardcoded here. Every credential/JWT secret is
+# interpolated from a git-ignored root `.env` (copy `.env.example`). Variables
+# marked `:?` make Compose fail fast instead of booting with a placeholder
+# secret (requirements.md C-06, docs/deployment.md §3).
+#
+# This base file is the PRODUCTION-shaped configuration:
+#   • only the web port is published to the host;
+#   • PostgreSQL is reachable on the internal network as `db:5432` only.
+# For local development (host-side npm scripts/tests that need 5433/4000),
+# layer the override:  docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+# ---------------------------------------------------------------------------
+
+x-app-image: &app-image b2b-oms-api:${B2B_IMAGE_TAG:-local}
+x-web-image: &web-image b2b-oms-web:${B2B_IMAGE_TAG:-local}
+
+# Connection string used by every container that talks to PostgreSQL. The
+# host is the Compose SERVICE NAME (`db`), not localhost — inside a container
+# localhost is the container itself.
+x-database-url: &database-url postgres://${POSTGRES_USER:-b2b}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in the root .env - see .env.example}@db:5432/${POSTGRES_DB:-b2b_oms}
+
+# Shared runtime environment for the API and for the migration/seed one-shots.
+# (backend/src/config/env.js also validates secrets at boot, so the one-shot
+# containers need the same variables to start under NODE_ENV=production.)
+x-api-env: &api-env
+  NODE_ENV: production
+  PORT: 4000
+  DATABASE_URL: *database-url
+  # Auth secrets come from the git-ignored root .env. No fallback on purpose:
+  # an empty value fails the interpolation check below, and a weak value makes
+  # the API refuse to boot (config/env.js fails closed).
+  JWT_ACCESS_SECRET: ${JWT_ACCESS_SECRET:?JWT_ACCESS_SECRET must be set in the root .env - see .env.example}
+  JWT_REFRESH_SECRET: ${JWT_REFRESH_SECRET:?JWT_REFRESH_SECRET must be set in the root .env - see .env.example}
+  # The SPA is same-origin behind nginx, so no cross-origin origins are needed.
+  CORS_ORIGINS: ${CORS_ORIGINS:-}
+  # Secure auth cookies are mandatory in production → serve over HTTPS.
+  COOKIE_SECURE: ${COOKIE_SECURE:-true}
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-b2b}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in the root .env - see .env.example}
+      POSTGRES_DB: ${POSTGRES_DB:-b2b_oms}
+    volumes:
+      # Named volume → data survives `docker compose down`, restarts and
+      # redeploys. Only `docker compose down -v` (documented as destructive in
+      # docs/deployment.md §8) would erase it.
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      # Readiness gate for `migrate` and the API: a real connection probe, not
+      # just a socket check (pg_isready answers "rejecting connections" during
+      # the init window).
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-b2b} -d ${POSTGRES_DB:-b2b_oms}']
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      start_period: 10s
+    # No `ports:` here on purpose — PostgreSQL must not be exposed to the host
+    # in a production-shaped deployment. docker-compose.dev.yml publishes 5433.
+
+  migrate:
+    # Controlled deployment step: ONE short-lived container applies pending
+    # migrations, and the API only starts after it exits successfully. Scaling
+    # `backend` to N replicas therefore cannot run N concurrent migrations.
+    # Re-run explicitly with: docker compose run --rm migrate
+    image: *app-image
+    build:
+      context: ./backend
+    restart: 'no'
+    command: ['node', 'scripts/db/migrate.js', 'up']
+    environment:
+      <<: *api-env
+    depends_on:
+      db:
+        condition: service_healthy
+
+  backend:
+    image: *app-image
+    build:
+      context: ./backend
+    restart: unless-stopped
+    # The image's CMD is `node src/server.js`; it performs NO schema changes.
+    environment:
+      <<: *api-env
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "fetch('http://127.0.0.1:4000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 15s
+      timeout: 3s
+      retries: 4
+      start_period: 15s
+    # Publish 4000 only when the API is consumed directly (see the dev
+    # override); the browser goes through nginx on the same origin instead.
+
+  seed:
+    # Optional demo fixture loader, hidden behind a profile so a normal
+    # `up` never mutates data. Idempotent and non-destructive: it skips when
+    # any users/products already exist (backend/scripts/db/seed.js).
+    image: *app-image
+    restart: 'no'
+    profiles: ['tools']
+    command: ['node', 'scripts/db/seed.js']
+    environment:
+      <<: *api-env
+    volumes:
+      # seed-data.js lives OUTSIDE the backend build context (repo-root
+      # database/), so demo data is mounted read-only at run time rather than
+      # baked into the image.
+      - ./database:/database:ro
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+
+  frontend:
+    image: *web-image
+    build:
+      context: ./frontend
+    restart: unless-stopped
+    ports:
+      # The single published port: browser origin for the whole app.
+      - '${WEB_PORT:-8080}:80'
+    depends_on:
+      backend:
+        condition: service_healthy
+
+volumes:
+  pgdata:

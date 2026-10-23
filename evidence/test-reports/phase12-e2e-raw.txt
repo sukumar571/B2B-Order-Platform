@@ -1,0 +1,41 @@
+E2E RUN START: 2026-10-23 18:27:58 +05:30
+
+[e2e] Bootstrapping disposable E2E database (postgres://***@localhost:5433/b2b_oms_e2e)  
+Recreated disposable E2E database "b2b_oms_e2e".
+Applied all migrations to postgres://***@localhost:5433/b2b_oms_e2e.
+Seeded 4 users and 6 products into "b2b_oms_e2e".
+[e2e] E2E database ready.
+
+node : [WebServer] 
+{"level":"error","message":"pg.pool.error","detail":"terminating connection 
+due to administrator command"}
+At line:1 char:226
++ ... 2e-run.log; node node_modules/@playwright/test/cli.js test --reporter ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ([WebServer] {"l...rator command"} 
+   :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+
+Running 17 tests using 1 worker
+
+       1 [chromium]   Q% tests\critical-journeys.spec.js:35:3   Q% Critical business journeys   Q% 1. Admin logs in and creates a product (4.6s)
+       2 [chromium]   Q% tests\critical-journeys.spec.js:55:3   Q% Critical business journeys   Q% 2. Admin updates stock (2.2s)
+       3 [chromium]   Q% tests\critical-journeys.spec.js:79:3   Q% Critical business journeys   Q% 3. Customer registers, then logs in (2.8s)
+       4 [chromium]   Q% tests\critical-journeys.spec.js:93:3   Q% Critical business journeys   Q% 4. Customer browses products and adds one to the cart (2.8s)
+       5 [chromium]   Q% tests\critical-journeys.spec.js:112:3   Q% Critical business journeys   Q% 5. Customer places an order (server-priced, stock reserved) (2.4s)
+       6 [chromium]   Q% tests\critical-journeys.spec.js:125:3   Q% Critical business journeys   Q% 6. Stock reservation is verified on the inventory ledger (2.0s)
+       7 [chromium]   Q% tests\critical-journeys.spec.js:131:3   Q% Critical business journeys   Q% 7. Order manager processes the order through to shipment (invoice minted) (2.1s)
+       8 [chromium]   Q% tests\critical-journeys.spec.js:148:3   Q% Critical business journeys   Q% 8. Customer views the order and its generated invoice (2.6s)
+       9 [chromium]   Q% tests\critical-journeys.spec.js:167:3   Q% Critical business journeys   Q% 9. Admin views audit events and dashboard statistics (2.1s)
+      10 [chromium]   Q% tests\critical-journeys.spec.js:188:3   Q% Critical business journeys   Q% 10. A customer is denied another customer  s order and invoice (3.6s)
+      11 [chromium]   Q% tests\negative-paths.spec.js:63:3   Q% Negative and adversarial paths   Q% Insufficient stock is rejected (409) and does not alter the cart (125ms)
+      12 [chromium]   Q% tests\negative-paths.spec.js:82:3   Q% Negative and adversarial paths   Q% Invalid quantities are rejected by validation (400) (249ms)
+      13 [chromium]   Q% tests\negative-paths.spec.js:93:3   Q% Negative and adversarial paths   Q% Inactive products cannot be added or ordered (404) (89ms)
+      14 [chromium]   Q% tests\negative-paths.spec.js:102:3   Q% Negative and adversarial paths   Q% A failing multi-line order rolls back atomically (no order, stock unchanged) (224ms)
+      15 [chromium]   Q% tests\negative-paths.spec.js:144:3   Q% Negative and adversarial paths   Q% Duplicate requests are idempotent (one order, replayed response) (136ms)
+      16 [chromium]   Q% tests\negative-paths.spec.js:175:3   Q% Negative and adversarial paths   Q% Unauthorized actions are refused at the API boundary (80ms)
+      17 [chromium]   Q% tests\negative-paths.spec.js:201:3   Q% Negative and adversarial paths   Q% A disabled account cannot obtain a token (403) (148ms)
+
+  17 passed (50.5s)
+EXITCODE=0
