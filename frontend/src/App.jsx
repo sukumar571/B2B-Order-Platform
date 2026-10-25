@@ -69,119 +69,123 @@ export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/products" element={<ProductsPage />} />
-          <Route path="/products/:id" element={<ProductDetailPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          <Route
-            path="/cart"
-            element={
-              <RequireRole roles={['customer']}>
-                <CartPage />
-              </RequireRole>
-            }
-          />
-          <Route
-            path="/orders"
-            element={
-              <RequireRole roles={['customer', 'admin', 'agent']}>
-                <OrderHistoryPage />
-              </RequireRole>
-            }
-          />
-          <Route
-            path="/orders/manage"
-            element={
-              <RequireRole roles={['admin', 'agent']}>
-                <OrderProcessingPage />
-              </RequireRole>
-            }
-          />
-          <Route
-            path="/orders/:orderId/invoice"
-            element={
-              <RequireRole roles={['customer', 'admin', 'agent']}>
-                <InvoicePage by="order" />
-              </RequireRole>
-            }
-          />
-          <Route
-            path="/invoices"
-            element={
-              <RequireRole roles={['customer', 'admin', 'agent']}>
-                <InvoiceListPage />
-              </RequireRole>
-            }
-          />
-          <Route
-            path="/invoices/:id"
-            element={
-              <RequireRole roles={['customer', 'admin', 'agent']}>
-                <InvoicePage />
-              </RequireRole>
-            }
-          />
-          <Route
-            path="/orders/:id/confirmation"
-            element={
-              <RequireRole roles={['customer']}>
-                <OrderConfirmationPage />
-              </RequireRole>
-            }
-          />
-          <Route
-            path="/orders/:id"
-            element={
-              <RequireRole roles={['customer', 'admin', 'agent']}>
-                <OrderDetailPage />
-              </RequireRole>
-            }
-          />
-          <Route
-            path="/admin/products"
-            element={
-              <RequireRole roles={['admin']}>
-                <AdminProductsPage />
-              </RequireRole>
-            }
-          />
-          <Route
-            path="/inventory"
-            element={
-              <RequireRole roles={['admin', 'agent']}>
-                <InventoryPage />
-              </RequireRole>
-            }
-          />
-          <Route
-            path="/dashboard"
-            element={
-              <RequireRole roles={['admin', 'agent']}>
-                <DashboardPage />
-              </RequireRole>
-            }
-          />
-          <Route
-            path="/audit"
-            element={
-              <RequireRole roles={['admin']}>
-                <AuditLogsPage />
-              </RequireRole>
-            }
-          />
-          <Route
-            path="/users"
-            element={
-              <RequireRole roles={['admin']}>
-                <UsersPage />
-              </RequireRole>
-            }
-          />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+        <div className="app-shell">
+          <Navbar />
+          <div className="app-main">
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/products" element={<ProductsPage />} />
+              <Route path="/products/:id" element={<ProductDetailPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route
+                path="/cart"
+                element={
+                  <RequireRole roles={['customer']}>
+                    <CartPage />
+                  </RequireRole>
+                }
+              />
+              <Route
+                path="/orders"
+                element={
+                  <RequireRole roles={['customer', 'admin', 'agent']}>
+                    <OrderHistoryPage />
+                  </RequireRole>
+                }
+              />
+              <Route
+                path="/orders/manage"
+                element={
+                  <RequireRole roles={['admin', 'agent']}>
+                    <OrderProcessingPage />
+                  </RequireRole>
+                }
+              />
+              <Route
+                path="/orders/:orderId/invoice"
+                element={
+                  <RequireRole roles={['customer', 'admin', 'agent']}>
+                    <InvoicePage by="order" />
+                  </RequireRole>
+                }
+              />
+              <Route
+                path="/invoices"
+                element={
+                  <RequireRole roles={['customer', 'admin', 'agent']}>
+                    <InvoiceListPage />
+                  </RequireRole>
+                }
+              />
+              <Route
+                path="/invoices/:id"
+                element={
+                  <RequireRole roles={['customer', 'admin', 'agent']}>
+                    <InvoicePage />
+                  </RequireRole>
+                }
+              />
+              <Route
+                path="/orders/:id/confirmation"
+                element={
+                  <RequireRole roles={['customer']}>
+                    <OrderConfirmationPage />
+                  </RequireRole>
+                }
+              />
+              <Route
+                path="/orders/:id"
+                element={
+                  <RequireRole roles={['customer', 'admin', 'agent']}>
+                    <OrderDetailPage />
+                  </RequireRole>
+                }
+              />
+              <Route
+                path="/admin/products"
+                element={
+                  <RequireRole roles={['admin']}>
+                    <AdminProductsPage />
+                  </RequireRole>
+                }
+              />
+              <Route
+                path="/inventory"
+                element={
+                  <RequireRole roles={['admin', 'agent']}>
+                    <InventoryPage />
+                  </RequireRole>
+                }
+              />
+              <Route
+                path="/dashboard"
+                element={
+                  <RequireRole roles={['admin', 'agent']}>
+                    <DashboardPage />
+                  </RequireRole>
+                }
+              />
+              <Route
+                path="/audit"
+                element={
+                  <RequireRole roles={['admin']}>
+                    <AuditLogsPage />
+                  </RequireRole>
+                }
+              />
+              <Route
+                path="/users"
+                element={
+                  <RequireRole roles={['admin']}>
+                    <UsersPage />
+                  </RequireRole>
+                }
+              />
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </div>
+        </div>
       </BrowserRouter>
     </AuthProvider>
   );

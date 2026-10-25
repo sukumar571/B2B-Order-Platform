@@ -12,8 +12,16 @@ and invoiced automatically. It replaces email-and-spreadsheet order handling.
 > secrets/generated-file audit (`git add -A --dry-run` → 336 files, **zero** secrets/dumps).
 > **No critical or high defect found**; one medium release-hygiene fix applied (package versions
 > `0.1.0 → 1.0.0`). Acceptance criteria for a **v1.0.0** functional release are met, scoped to the
-> single-tenant v1; performance-under-load and pilot usability remain honestly **not measured**.
+> single-tenant v1. Pilot usability remains honestly **not measured**; performance-under-load was
+> subsequently **measured** (see below) and passed the NFR-05 targets on dev hardware.
 > Full findings: [`docs/acceptance-report.md`](docs/acceptance-report.md).
+>
+> **Post-release — performance benchmark (NFR-05 / NFR-PERF-01 / SC-07).** A dependency-free
+> 20-virtual-user load harness (`backend/scripts/load/`, `npm run perf`) benchmarks the real app
+> against an isolated `b2b_oms_perf` DB at 500 products / 200 customers / 1,000+ orders.
+> Measured **PASS**: reads p95 **118 ms** (≤ 500), order creation p95 **501 ms** (≤ 1500), 5xx **0%**
+> — on a 4-core i3 dev laptop with Docker PostgreSQL (a dev datapoint, not production capacity).
+> Evidence: [`evidence/test-reports/perf-load.md`](evidence/test-reports/perf-load.md).
 >
 > **Prior — Phase 14: Final documentation & presentation.**
 > Phase 14 added no application code. It verified the build against
@@ -183,6 +191,8 @@ below), and `/admin/products` + `/inventory` are role-guarded staff screens.
 | `npm run e2e:bootstrap` | Recreate the disposable E2E DB only (name-guarded; refuses non-`*_e2e`) |
 | `npm run test:all` | `test` + `test:integration` + `test:e2e` |
 | `npm run coverage:backend` / `coverage:frontend` / `coverage` | V8 coverage of the full backend suite (isolated test DB) / Vitest frontend coverage (measured, **no threshold**) |
+| `npm run perf:seed` | Build/refresh the isolated `b2b_oms_perf` benchmark dataset (500 products / 200 customers / 1,000 orders); never touches dev/test DBs |
+| `npm run perf:load` / `npm run perf` | 20-virtual-user load benchmark (NFR-05 p95 targets); writes `evidence/test-reports/perf-load.{md,json}` |
 | `npm run db:create` / `db:migrate` / `db:seed` / `db:health` | Safe database setup commands (backend equivalents: `npm --prefix backend run db:create:test`, `db:migrate:test`, `db:health:test`) |
 | `npm run db:migrate:down` | Roll back the **last** migration (add `-- --all` via backend script `db:migrate:down` args to revert everything) |
 | `npm run db:up` | Start only PostgreSQL **with host-published ports** (dev override) for host-side tooling |

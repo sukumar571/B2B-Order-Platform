@@ -33,6 +33,9 @@
     "docker:migrate": "docker compose run --rm migrate",
     "docker:seed": "docker compose --profile tools run --rm seed",
     "docker:smoke": "node scripts/deploy-smoke.js",
+    "perf:seed": "npm --prefix backend run perf:seed",
+    "perf:load": "npm --prefix backend run perf:load",
+    "perf": "npm run perf:seed && npm run perf:load",
     "lint": "npm --prefix backend run lint && npm --prefix frontend run lint",
     "format": "prettier --write \"**/*.{js,jsx,json,md,css,html}\"",
     "format:check": "prettier --check \"**/*.{js,jsx,json,md,css,html}\""

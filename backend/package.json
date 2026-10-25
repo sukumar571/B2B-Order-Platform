@@ -20,7 +20,9 @@
     "db:seed": "node scripts/db/seed.js",
     "db:bootstrap:e2e": "node scripts/db/bootstrap-e2e.js",
     "db:health": "node scripts/db/health-check.js",
-    "db:health:test": "node scripts/db/health-check.js --test"
+    "db:health:test": "node scripts/db/health-check.js --test",
+    "perf:seed": "node scripts/load/perf-seed.js",
+    "perf:load": "node scripts/load/perf-run.js"
   },
   "engines": {
     "node": ">=20"

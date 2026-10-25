@@ -63,7 +63,7 @@ the ones with a dedicated assertion:
 | AC | Status | Result |
 |---|---|---|
 | AC-AUTH-07, AC-CART-05, AC-CAT-07, AC-ORD-08, AC-LIF-06, AC-INV-04, AC-AUD-03 | Covered by the green suites | ✅ |
-| NFR-PERF-01 / SC-07 | **20-vu p95 load test NOT run** (no load harness executed this audit); the 20-way test proves *correctness* only | ➖ Not measured |
+| NFR-PERF-01 / SC-07 | Not run during this audit; **subsequently measured** with a purpose-built 20-vU closed-loop benchmark — reads p95 **118 ms**, order creation p95 **501 ms**, 5xx **0%** → **PASS** (`evidence/test-reports/perf-load.md`) | ✅ Measured (post-audit) |
 | SC-06 | Pilot usability timing with real users **not performed** | ➖ Not measured |
 | NFR-USE-01 | Flows run end-to-end; the "≤5 UI steps" count **not formally measured** | ➖ Not measured |
 | NFR-09 | E2E ran **Chromium only**; Edge/Firefox not exercised | ⚠️ Caveat |
@@ -91,12 +91,14 @@ lint and all three test tiers (no application logic touched).
 ## D. Acceptance decision
 
 - Every **Must** acceptance criterion is verified by an actually-executed command with recorded
-  output. The two **Should**-tier quantitative items (NFR-PERF-01/SC-07 load, SC-06 pilot) and the
-  NFR-USE-01 step count were **not measured** and are honestly reported as such — none is a
+  output. Of the **Should**-tier quantitative items, performance-under-load (NFR-PERF-01/SC-07) has
+  since been **measured (PASS, dev hardware)** via `backend/scripts/load/`; SC-06 (pilot) and the
+  NFR-USE-01 step count remain **not measured** and are honestly reported as such — none is a
   release-blocking Must.
 - No critical or high defect was found. One medium release-hygiene defect (version fields) was
   fixed and re-verified.
 - **Therefore the acceptance criteria for a v1.0.0 functional release are met**, scoped as the
   single-tenant v1 described in `requirements.md` §3.1. **Recommend tag `v1.0.0`.**
-- **Do NOT** claim measured performance, pilot usability, or business impact in the release notes —
-  those were not measured (see `limitations.md`).
+- Release notes may cite the **measured** load results but must scope them to the dev hardware
+  they were taken on. Do **NOT** claim pilot usability or business impact — those were not measured
+  (see `limitations.md`).

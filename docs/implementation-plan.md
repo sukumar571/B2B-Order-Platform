@@ -59,6 +59,12 @@ Deliverables: the eight `docs/` files, consistency validation, committed baselin
 
 ## 2. Requirements → tests traceability table
 
+> **Status note (superseded by delivery).** The `Status` column below is the **original Phase-1
+> planning baseline** and still reads `planned` for many rows that have since been built and
+> verified. Do **not** trust those cells as current — read the authoritative **§5 Delivered
+> status** checklist (updated after the Phase 15 acceptance audit) for what is actually done.
+> This table is retained unmodified as a historical planning artifact.
+
 Verification types: U = unit, I = integration, L = load, E = E2E (Playwright), F = frontend test, M = manual. Every Must-level requirement has at least one planned automated test; **status column is filled during Phases 3–5 — all rows start as `planned`**.
 
 | Requirement | Acceptance criterion | Planned test (name) | Type | Status |
@@ -109,7 +115,7 @@ Verification types: U = unit, I = integration, L = load, E = E2E (Playwright), F
 | NFR-02 | NFR-SEC-01 | `security/injection.test.js` suite | I | planned |
 | NFR-03 | NFR-SEC-02 | secret-scan step | M/CI | planned |
 | NFR-04 | AC-AUTH-07, AC-CART-05, AC-LIF-05, AC-AUD-03 | per-group forbidden-role tests | I | planned |
-| NFR-05 | NFR-PERF-01 | `load/perf.mjs` (20 vU, seeded scale) | L | planned |
+| NFR-05 | NFR-PERF-01 | `scripts/load/perf-run.js` (20 vU closed-loop, seeded scale) | L | **measured PASS** (reads p95 118 ms, order p95 501 ms) |
 | NFR-06 | AC-ORD-02 | rollback test + ledger reconciliation | I | planned |
 | NFR-07 | AC-CART-02, D-09 set | `cart-unit.test.js › money` property + fixture | U | **as-built (Phase 6)** |
 | NFR-08 | NFR-USE-01 | walkthrough checklist + screenshots | M | planned |
@@ -135,3 +141,48 @@ Coverage check: every FR and NFR row above has ≥1 planned verification; every 
 ## 4. Definition of done per feature PR
 
 Code layered per `architecture.md` §4 · Zod validation · RBAC declared · happy + sad + forbidden-role tests · audit write where FR-AUD-01 applies · lint clean · traceability row status updated with test name · no secrets/PII in logs.
+
+## 5. Delivered status (implementation checklist — updated after Phase 15 acceptance audit, commit cf9adcc, v1.0.0)
+
+Source of truth for every "verified" below is [`acceptance-report.md`](acceptance-report.md) and
+[`test-results.md`](test-results.md) §8 — each was re-run live (backend 228/228, frontend 74/74,
+E2E 17/17, deploy smoke 9/9, clean-DB migrate 18/14 + idempotent seed, compose persistence).
+
+### 5.1 Completed & verified
+| Group | IDs | Evidence tier |
+|---|---|---|
+| Auth & users | FR-AUTH-01…07, AC-AUTH-01…07 | Int + E2E + login/deploy smoke |
+| Catalog & inventory | FR-CAT-01…08, AC-CAT-01…07 | Int + Unit + screenshots |
+| Cart | FR-CART-01…05, AC-CART-01…05 | Int + Unit |
+| Orders (create/stock/idempotency) | FR-ORD-01…06, AC-ORD-01…08 | Int (incl. 20-way oversell) |
+| Orders (lifecycle) | FR-ORD-07…11, AC-LIF-01…06 | Int + E2E |
+| Invoices | FR-INV-01…05, AC-INV-01…04 | Int |
+| Audit | FR-AUD-01/02/03/05, AC-AUD-01…03 | Int + Unit + grep |
+| Health endpoint | FR-AUD-04, NFR-DEPLOY-01 | deploy smoke + compose |
+| Security NFRs | NFR-01/02/03/04, NFR-SEC-01/02 | Int injection suite + git secret scan |
+| Reliability/correctness | NFR-06/07/13 | Int rollback + money fixtures + audit reconstruct |
+| Maintainability/deployability | NFR-10/11/12/14 | ESLint clean + coverage recorded + compose up/down persistence |
+| E2E + UI | SC-01…05, SC-05, UI core (F-06) | Playwright 17/17 + Vitest 74/74 |
+
+### 5.2 Incomplete — deliberately out of scope for v1 (see `requirements.md` §3.2, `future-roadmap.md`)
+Payments/settlement, shipping & carrier tracking, multi-warehouse/batch inventory, per-customer
+pricing & discounts & credit limits, multi-jurisdiction tax, purchase orders/procurement, report
+CSV/BI export, email invoice delivery, self-service password reset, localization/theming/native
+apps, and **multi-tenancy** (C-10 fixes single-tenant). None are defects; each is a scoped v1
+boundary with a sized roadmap entry.
+
+### 5.3 Broken
+**None found.** The Phase 15 independent re-run produced no critical or high defect; build, lint,
+format, and all three test tiers exited 0 on the committed tree.
+
+### 5.4 Unverified / not measured (honest — never reported as passing)
+| Item | Status | Blocking? |
+|---|---|---|
+| NFR-05 / SC-07 / NFR-PERF-01 — p95 load at 20 vU on 500-product scale | ✅ **Measured PASS** (20-vU benchmark: reads p95 118 ms ≤ 500, order p95 501 ms ≤ 1500, 5xx 0 %). Evidence `evidence/test-reports/perf-load.md`. Dev-laptop datapoint, not production capacity | — |
+| SC-06 / Q-05 — pilot usability ≤10 min with real users | ➖ **Not performed** (no pilot users) | No |
+| NFR-08 / NFR-USE-01 — ≤5 UI-step formal count | ⚠️ Flows verified E2E; step count not measured | No (Should) |
+| NFR-09 — Chrome **and** Edge ≥1280px | ⚠️ E2E ran **Chromium only** | No |
+| 500-product / 200-customer perf seed set (A-07) | ✅ Generated on demand in the isolated benchmark DB via `npm run perf:seed` (dev/test DBs untouched) | No |
+
+### 5.5 Candidate "next phase" options (all are scope decisions — require explicit approval)
+A. **Load benchmark + perf seed** (roadmap #6) — **DONE**: retired NFR-05/SC-07 "not measured" via `backend/scripts/load/` (`npm run perf`), measured PASS on a dev laptop. B. **Cross-browser E2E** (Edge/Firefox, containerised) — close NFR-09. C. **Operational hardening** (external TLS, Redis rate-limit + token revocation, CI, managed secrets). D. A **business feature** (payments / per-customer pricing / multi-warehouse / self-service password reset / report export). Remaining options are mutually independent; the released v1.0.0 remains valid whichever is chosen.

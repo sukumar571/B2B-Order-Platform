@@ -539,6 +539,98 @@ describe(
       assert.strictEqual(row.reserved_quantity, 2, 'replay/conflict must not reserve again');
     });
 
+    // ── CONCURRENT RETRY AFTER A FAILED CLAIM (idempotency reopen race) ───────
+    // A key whose first attempt failed is legitimately retryable. Two retries
+    // fired concurrently must NOT both reopen the failed claim and create two
+    // orders — the reopen is a compare-and-swap, so exactly one proceeds.
+    test('concurrent retries of a failed idempotency key create only one order', async () => {
+      const p = await createProduct(admin, { name: `RetryRace${U()}`, initial_stock: 10 });
+      const key = KEY();
+      // First attempt exceeds available stock → rolls back and marks the claim
+      // 'failed' (no reservation made).
+      const failed = await place(
+        customerA.token,
+        { items: [{ product_id: p.id, quantity: 20 }] },
+        key
+      );
+      assert.strictEqual(failed.status, 409, JSON.stringify(failed.body));
+      assert.strictEqual(failed.body.error.code, 'INSUFFICIENT_STOCK');
+      const claimAfterFail = (
+        await db.query(
+          'SELECT status FROM idempotency_keys WHERE user_id = $1 AND idempotency_key = $2',
+          [customerA.id, key]
+        )
+      ).rows[0];
+      assert.strictEqual(
+        claimAfterFail.status,
+        'failed',
+        'failed attempt must leave a retryable claim'
+      );
+
+      // Two concurrent, now-fulfillable retries of the SAME key.
+      const retries = await Promise.all([
+        place(customerA.token, { items: [{ product_id: p.id, quantity: 2 }] }, key),
+        place(customerA.token, { items: [{ product_id: p.id, quantity: 2 }] }, key),
+      ]);
+      const created = retries.filter((r) => r.status === 201);
+      assert.strictEqual(created.length, 1, `expected exactly 1 order, got ${created.length}`);
+      for (const r of retries.filter((x) => x.status !== 201)) {
+        assert.strictEqual(r.status, 409, JSON.stringify(r.body));
+        assert.strictEqual(r.body.error.code, 'DUPLICATE_REQUEST');
+      }
+
+      const row = await stockRow(p.id);
+      assert.strictEqual(
+        row.reserved_quantity,
+        2,
+        'the same key reserved stock twice (duplicate order)'
+      );
+      const orderLines = (
+        await db.query('SELECT count(*)::int AS n FROM order_items WHERE product_id = $1', [p.id])
+      ).rows[0].n;
+      assert.strictEqual(orderLines, 1, 'a duplicate order was created for one idempotency key');
+      const claimFinal = (
+        await db.query(
+          'SELECT status FROM idempotency_keys WHERE user_id = $1 AND idempotency_key = $2',
+          [customerA.id, key]
+        )
+      ).rows[0];
+      assert.strictEqual(claimFinal.status, 'completed');
+    });
+
+    // ── DETERMINISTIC: the failed→in_progress re-claim is a compare-and-swap ──
+    // Over HTTP the double-open window is very narrow (each retry commits its
+    // claim lookup and its reopen as separate short transactions, so one
+    // request usually advances the key state before the other observes
+    // 'failed'). This test pins the invariant directly at the repository seam:
+    // exactly ONE caller may transition a 'failed' claim back to 'in_progress'.
+    // A second reopen of an already-claimed row MUST lose — otherwise two
+    // requests would both run order creation for one key (duplicate order).
+    test('a failed idempotency claim can be re-claimed by only one opener (CAS)', async () => {
+      const orderRepo = require('../src/repositories/order.repository');
+      const key = KEY();
+      const hash = 'a'.repeat(64);
+      const seed = await db.query(
+        `INSERT INTO idempotency_keys
+           (user_id, idempotency_key, request_scope, status, request_hash, expires_at)
+         VALUES ($1, $2, 'POST /api/orders', 'failed', $3, now() + interval '24 hours')
+         RETURNING id`,
+        [customerA.id, key, hash]
+      );
+      const claimId = seed.rows[0].id;
+
+      const first = await db.withTransaction((c) => orderRepo.retakeClaim(c, claimId, hash));
+      assert.strictEqual(first, true, 'the first re-claim of a failed key must succeed');
+
+      const second = await db.withTransaction((c) => orderRepo.retakeClaim(c, claimId, hash));
+      assert.strictEqual(second, false, 'a concurrent re-claim must not double-open the key');
+
+      const finalStatus = (
+        await db.query('SELECT status FROM idempotency_keys WHERE id = $1', [claimId])
+      ).rows[0].status;
+      assert.strictEqual(finalStatus, 'in_progress');
+    });
+
     // ── SAME-ORDER TRANSITION RACE (Phase 11 fix: FOR UPDATE on the orders row) ─
     test('concurrent duplicate ship consumes stock exactly once and mints one invoice', async () => {
       const p = await createProduct(admin, { name: `ShipRace${U()}`, initial_stock: 6 });

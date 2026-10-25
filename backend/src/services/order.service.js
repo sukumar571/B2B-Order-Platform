@@ -234,8 +234,17 @@ async function createOrder(customerId, rawBody, actor, idempotencyKey) {
         'A request with this idempotency key is already in progress'
       );
     }
-    // 'failed' → reopen and retry.
-    await withTransaction((client) => orderRepo.retakeClaim(client, row.id, hash));
+    // 'failed' → reopen and retry, but only if we WIN the atomic re-claim.
+    // Concurrent retries of a failed key race here; the compare-and-swap lets
+    // exactly one proceed, so the loser cannot create a duplicate order (and
+    // must not mark the winner's now in-progress claim as failed).
+    const retook = await withTransaction((client) => orderRepo.retakeClaim(client, row.id, hash));
+    if (!retook) {
+      throw ApiError.conflict(
+        'DUPLICATE_REQUEST',
+        'A request with this idempotency key is already in progress'
+      );
+    }
     return runCreate(row.id, customerId, requested, actor);
   }
   if (!claim.claimed) {

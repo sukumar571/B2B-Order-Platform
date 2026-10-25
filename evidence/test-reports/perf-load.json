@@ -1,0 +1,76 @@
+{
+  "criteria": "NFR-PERF-01 / NFR-05 / SC-07",
+  "workload": {
+    "model": "closed-loop",
+    "concurrency": 20,
+    "readDurationMs": 60000,
+    "orderDurationMs": 60000,
+    "dataset": {
+      "products": 500,
+      "customers": 200,
+      "ordersBeforeRun": 1436
+    }
+  },
+  "targets": {
+    "readP95Ms": 500,
+    "orderP95Ms": 1500,
+    "errorRatePctMax": 1
+  },
+  "hardware": {
+    "platform": "Windows_NT 10.0.26300 (x64)",
+    "cpu": "4 × 11th Gen Intel(R) Core(TM) i3-1115G4 @ 3.00GHz",
+    "totalMemoryGb": 8.3,
+    "node": "v24.17.0",
+    "database": "PostgreSQL 16.15 (Docker)",
+    "benchmarkDatabase": "b2b_oms_perf",
+    "measuredAt": "2026-10-23T16:32:10.870Z"
+  },
+  "measured": {
+    "reads": {
+      "label": "read-mix",
+      "concurrency": 20,
+      "durationMs": 60036,
+      "requests": 17132,
+      "measured": 17132,
+      "throughputRps": 285.4,
+      "ok": 17132,
+      "client4xx": 0,
+      "server5xx": 0,
+      "networkError": 0,
+      "errorRatePct": 0,
+      "latencyMs": {
+        "min": 4.4,
+        "p50": 63.5,
+        "p95": 118,
+        "p99": 165.5,
+        "max": 1040.7,
+        "mean": 70.1
+      }
+    },
+    "orders": {
+      "label": "order-creation",
+      "concurrency": 20,
+      "durationMs": 60104,
+      "requests": 3912,
+      "measured": 3912,
+      "throughputRps": 65.1,
+      "ok": 3912,
+      "client4xx": 0,
+      "server5xx": 0,
+      "networkError": 0,
+      "errorRatePct": 0,
+      "latencyMs": {
+        "min": 94.1,
+        "p50": 280.8,
+        "p95": 501.2,
+        "p99": 722.1,
+        "max": 2324.7,
+        "mean": 307.1
+      }
+    }
+  },
+  "verdict": {
+    "status": "PASS",
+    "reasons": []
+  }
+}

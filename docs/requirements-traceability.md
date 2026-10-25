@@ -20,7 +20,8 @@ Status legend: **✅ Verified** = an automated test in the table above exercises
 measured** = intentionally **not** run in this environment; reported honestly, never claimed as passing.
 
 > **Honesty rule:** no row is marked ✅ unless a test that actually ran covers it. Performance
-> latency under load and pilot-user timing are explicitly **⚪ Not measured** (§5).
+> latency under load is now **measured** by the 20-virtual-user benchmark (`backend/scripts/load/`,
+> evidence in `evidence/test-reports/perf-load.md`); pilot-user timing (SC-06) remains **⚪ Not measured** (§5).
 
 ---
 
@@ -108,7 +109,7 @@ measured** = intentionally **not** run in this environment; reported honestly, n
 | NFR-02 SQL injection (all parameterized) | every `*.repository.js` (parameterized SQL only) | integration hostile-input suite (NFR-SEC-01) | ✅ |
 | NFR-03 secrets from env only | `.env.example` placeholders; root `.env` git-ignored; `${VAR:?}` | Phase 13 fail-fast + image `.env count:0` | ✅ |
 | NFR-04 RBAC on 100 % endpoints | `authorize.js` per route | integration per-role forbidden cases | ✅ |
-| NFR-05 performance p95 targets | layered + indexes; `pg` pool | **not run** — see §5 | ⚪ |
+| NFR-05 performance p95 targets | layered + indexes; `pg` pool | 20-vU closed-loop benchmark (`perf-run.js`): reads p95 **118 ms**, order p95 **501 ms**, 0× 5xx | ✅ measured |
 | NFR-06 order atomicity | transactional order create | integration rollback + E2e negative | ✅ |
 | NFR-07 decimal-safe money | `utils/money.js`, `NUMERIC` | money unit + total invariants | ✅ |
 | NFR-08 core flows ≤ 5 UI steps | SPA UX | E2E journeys demonstrate; **not step-counted** | 🟡 |
@@ -159,7 +160,7 @@ measured** = intentionally **not** run in this environment; reported honestly, n
 | SC-04 | post-order price/name edit never changes history | ✅ integration snapshot-immutability |
 | SC-05 | Playwright happy path green | ✅ E2E journeys 1→9 |
 | SC-06 | pilot user places an order in ≤ 10 min training | ⚪ **Not performed** — no pilot users available; qualitative, not measured |
-| SC-07 | NFR-05 latency targets met in a load test | ⚪ **Not measured** — no scripted 20-virtual-user *latency* load test was run; SC-02 proves correctness of the race, not p95 timing. Reported as not-measured per the honesty constraint. |
+| SC-07 | NFR-05 latency targets met in a load test | ✅ **Measured PASS** — 20-vU closed-loop benchmark (60 s reads + 60 s order creation) on 500 products/200 customers: reads p95 118 ms (≤ 500), order p95 501 ms (≤ 1500), 5xx 0 % (< 1%). See `evidence/test-reports/perf-load.md`. Measured on a 4-core i3 dev laptop + Docker PostgreSQL — not production hardware. |
 
 ---
 
@@ -173,12 +174,14 @@ measured** = intentionally **not** run in this environment; reported honestly, n
 
 ## 7. Known traceability gaps (disclosed, not hidden)
 
-1. **Performance under load (NFR-05 / SC-07)** — not measured in this environment.
-2. **Pilot usability timing (SC-06)** — not performed (no pilot cohort).
-3. **Edge browser (NFR-09)** — Playwright ran Chromium only; Edge was not separately executed.
-4. **UI step-counting (NFR-08)** — flows are proven working by E2E but were not formally counted.
-5. **E2E against the Docker stack** — Playwright runs against host-started API/SPA on the
+1. **Pilot usability timing (SC-06)** — not performed (no pilot cohort).
+2. **Edge browser (NFR-09)** — Playwright ran Chromium only; Edge was not separately executed.
+3. **UI step-counting (NFR-08)** — flows are proven working by E2E but were not formally counted.
+4. **E2E against the Docker stack** — Playwright runs against host-started API/SPA on the
    disposable `b2b_oms_e2e` DB, not inside the containers; the deployed containers are covered
    by the HTTP-level `docker:smoke` (9/9) instead.
+
+> Closed since Phase 15: **NFR-05 / SC-07 performance under load** was previously not measured and
+> is now covered by the 20-vU benchmark (§5, `evidence/test-reports/perf-load.md`).
 
 See [`limitations.md`](limitations.md) for the full, authoritative list.

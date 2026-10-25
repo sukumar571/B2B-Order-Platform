@@ -63,14 +63,22 @@ async function completeClaim(client, claimId, responseStatus, responseBody) {
   );
 }
 
-/** Reopen a previously-failed claim so the same key can be retried. */
+/**
+ * Reopen a previously-failed claim so the same key can be retried. This is a
+ * compare-and-swap: it only flips a row that is STILL 'failed' and returns
+ * whether THIS caller won the re-claim. Without the `status = 'failed'` guard
+ * two concurrent retries of a failed key could both reopen it and run the
+ * order creation twice — the exact duplicate-order idempotency exists to stop.
+ */
 async function retakeClaim(client, claimId, requestHash) {
-  await client.query(
+  const r = await client.query(
     `UPDATE idempotency_keys
         SET status = 'in_progress', request_hash = $2, response_status = NULL, response_body = NULL
-      WHERE id = $1`,
+      WHERE id = $1 AND status = 'failed'
+      RETURNING id`,
     [claimId, requestHash]
   );
+  return r.rowCount > 0;
 }
 
 /** Mark a claim failed (so the key is reusable) after the order rolled back. */

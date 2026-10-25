@@ -3,6 +3,7 @@ import { fetchUsers, updateUser } from '../services/api.js';
 import { useApi } from '../hooks/useApi.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import { DataBoundary } from '../components/States.jsx';
+import Dialog from '../components/Dialog.jsx';
 import { totalPages, pageSummary } from '../utils/pagination.js';
 
 const PAGE_SIZE = 25;
@@ -29,6 +30,7 @@ export default function UsersPage() {
   const [page, setPage] = useState(1);
   const [feedback, setFeedback] = useState(null);
   const [busyId, setBusyId] = useState(null);
+  const [confirmRow, setConfirmRow] = useState(null); // row pending a deactivation
 
   const params = useMemo(() => ({ page, limit: PAGE_SIZE }), [page]);
   const fetcher = useCallback(() => fetchUsers(params, token), [params, token]);
@@ -122,7 +124,9 @@ export default function UsersPage() {
                           type="button"
                           className="btn btn--small btn--secondary"
                           disabled={busyId === u.id || isSelf(u)}
-                          onClick={() => patch(u, { is_active: !u.is_active })}
+                          onClick={() =>
+                            u.is_active ? setConfirmRow(u) : patch(u, { is_active: true })
+                          }
                         >
                           {busyId === u.id ? 'Working…' : u.is_active ? 'Deactivate' : 'Activate'}
                         </button>
@@ -159,6 +163,24 @@ export default function UsersPage() {
           </>
         )}
       </DataBoundary>
+
+      <Dialog
+        open={Boolean(confirmRow)}
+        tone="danger"
+        title="Deactivate this user?"
+        confirmLabel={busyId === confirmRow?.id ? 'Working…' : 'Deactivate'}
+        cancelLabel="Cancel"
+        onClose={() => setConfirmRow(null)}
+        onConfirm={async () => {
+          const row = confirmRow;
+          setConfirmRow(null);
+          if (row) await patch(row, { is_active: false });
+        }}
+      >
+        {confirmRow
+          ? `Deactivating ${confirmRow.email} blocks them from signing in. Their existing orders and audit history are preserved. This is reversible.`
+          : ''}
+      </Dialog>
     </main>
   );
 }

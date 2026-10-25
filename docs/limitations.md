@@ -32,7 +32,7 @@ issues that remain. Cross-references: [`requirements.md`](requirements.md) §3.2
 
 | Item | Status (honest) |
 |---|---|
-| **Performance under load (NFR-05 / SC-07)** | **Not measured.** No scripted 20-virtual-user latency test was run; the 20-way test proves **correctness** of the oversell guard, not p95 timing. |
+| **Performance under load (NFR-05 / SC-07)** | **Measured — PASS** via the 20-virtual-user closed-loop benchmark (`backend/scripts/load/`, `npm run perf`). On a 4-core i3 dev laptop with Docker PostgreSQL 16, over 500 products/200 customers: reads p95 **118 ms** (≤ 500), order creation p95 **501 ms** (≤ 1500), 5xx **0 %** (< 1%). Evidence: `evidence/test-reports/perf-load.md`. **Caveat:** a dev-laptop datapoint, not a production-capacity benchmark, and not the pilot-user/business-impact measure. |
 | **Pilot usability timing (SC-06)** | **Not performed.** "≤ 10 minutes of training" was never validated with real users. |
 | **Business impact** | **No measurement exists.** Claims about fewer order errors, faster invoicing, or prevented overselling describe the *intended* design; none are quantified from production data. |
 | Browser coverage | Automated E2E ran **Chromium only**; Edge/Firefox and other viewports not exercised (NFR-09 target 1280 px Chrome/Edge). |
